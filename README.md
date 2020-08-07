@@ -184,7 +184,7 @@ Behind the hood, the script use `git log` to list all the commit thus any syntax
 
 See the [open issues](https://github.com/lumapps/commit-msg-validator/issues) for a list of proposed features (and known issues).
 
-- [ ] list all the commit a run on each
+- [x] list all the commit, and run validation on each
 - [ ] enforce the overall commit message structure
 - [ ] enforce the overall commit header structure
 - [ ] enforce the overall commit header lenght
