@@ -1,14 +1,21 @@
 #!/bin/bash -e
 
+readonly HEADER_PATTERN="^([^\(]+)\(([^\)]+)\): (.+)$"
 readonly JIRA_PATTERN="^([A-Z]{2,4}-[0-9]{1,6} ?)+$"
 readonly BROKE_PATTERN="^BROKEN:$"
 
 readonly ERROR_STRUCTURE=1
+readonly ERROR_HEADER=2
+readonly ERROR_HEADER_LENGTH=3
 
 GLOBAL_HEADER=""
 GLOBAL_BODY=""
 GLOBAL_JIRA=""
 GLOBAL_FOOTER=""
+
+GLOBAL_TYPE=""
+GLOBAL_SCOPE=""
+GLOBAL_SUBJECT=""
 
 validate_overall_structure() {
   local MESSAGE="$1"
@@ -97,6 +104,29 @@ validate_overall_structure() {
   fi
 }
 
+validate_header() {
+  local HEADER="$1"
+
+  if [[ $HEADER =~ $HEADER_PATTERN ]]; then
+     GLOBAL_TYPE=${BASH_REMATCH[1]}
+     GLOBAL_SCOPE=${BASH_REMATCH[2]}
+     GLOBAL_SUBJECT=${BASH_REMATCH[3]}
+  else
+     echo -e "commit header doesn't match overall header pattern: 'type(scope): message'"
+     exit $ERROR_HEADER
+  fi
+}
+
+validate_header_length() {
+  local HEADER="$1"
+  local LENGTH=`echo -n "$HEADER" | wc -c`
+
+  if [ $LENGTH -gt 70 ]; then
+      echo -e "commit header length is more than 70 charaters"
+      exit $ERROR_HEADER_LENGTH
+  fi
+}
+
 validate() {
    local COMMIT_MSG="$1"
 
@@ -106,4 +136,11 @@ validate() {
    local BODY="$GLOBAL_BODY"
    local JIRA="$GLOBAL_JIRA"
    local FOOTER="$GLOBAL_FOOTER"
+
+   validate_header "$HEADER"
+   validate_header_length "$HEADER"
+
+   local TYPE="$GLOBAL_TYPE"
+   local SCOPE="$GLOBAL_SCOPE"
+   local SUBJECT="$GLOBAL_SUBJECT"
 }

@@ -186,8 +186,8 @@ See the [open issues](https://github.com/lumapps/commit-msg-validator/issues) fo
 
 - [x] list all the commit, and run validation on each
 - [x] enforce the overall commit message structure
-- [ ] enforce the overall commit header structure
-- [ ] enforce the overall commit header lenght
+- [x] enforce the overall commit header structure
+- [x] enforce the overall commit header lenght
 - [ ] enforce the commit type
 - [ ] enforce the commit scope
 - [ ] enforce the commit subject
