@@ -224,6 +224,7 @@ validate() {
    validate_subject "$SUBJECT"
 
    validate_body_length "$BODY"
+   validate_body_length "$FOOTER"
 
    validate_jira "$TYPE" "$JIRA"
 }

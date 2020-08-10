@@ -486,6 +486,19 @@ LUM-2345'
   [[ "$status" -eq $ERROR_BODY_LENGTH ]]
 }
 
+@test "overall validation invalid footer length" {
+  MESSAGE='feat(scope1): subject
+
+plop
+
+LUM-2345
+BROKEN:
+- 12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901'
+
+  run validate "$MESSAGE"
+  [[ "$status" -eq $ERROR_BODY_LENGTH ]]
+}
+
 @test "overall validation missing jira" {
   MESSAGE='feat(scope1): subject
 
