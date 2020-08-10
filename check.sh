@@ -1,5 +1,11 @@
 #!/bin/bash -e
 
+if [[ $ZSH_NAME != "" ]]; then
+  setopt BASH_REMATCH
+  setopt RE_MATCH_PCRE
+  setopt KSH_ARRAYS
+fi
+
 source ./validator.sh
 
 COMMITS=`git log --no-merges --pretty="%H" --no-decorate $1`
