@@ -192,7 +192,7 @@ See the [open issues](https://github.com/lumapps/commit-msg-validator/issues) fo
 - [x] enforce the commit scope
 - [x] enforce the commit subject
 - [x] enforce the commit body length
-- [ ] enforce the JIRA reference
+- [x] enforce the JIRA reference
 - [ ] enforce the BROKEN part
 - [ ] avoid trailing space
 - [ ] allow automated revert commit

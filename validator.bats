@@ -395,6 +395,31 @@ LUM-2345'
   [[ "$status" -eq 0 ]]
 }
 
+@test "features and fixes commits need jira reference" {
+  [[ `need_jira "feat"` -eq 1 ]]
+  [[ `need_jira "fix"` -eq 1 ]]
+}
+
+@test "other commits don't need jira reference" {
+  [[ `need_jira "docs"` -eq 0 ]]
+  [[ `need_jira "test"` -eq 0 ]]
+}
+
+@test "feat without jira ref should be rejected" {
+  run validate_jira "feat" ""
+  [[ "$status" -eq $ERROR_JIRA ]]
+}
+
+@test "lint without jira ref should be validated" {
+  run validate_jira "lint" ""
+  [[ "$status" -eq 0 ]]
+}
+
+@test "feat with jira ref should be validated" {
+  run validate_jira "feat" "ABC-123"
+  [[ "$status" -eq 0 ]]
+}
+
 @test "overall validation invalid structure" {
   MESSAGE='plop
 plop'
@@ -459,6 +484,17 @@ LUM-2345'
 
   run validate "$MESSAGE"
   [[ "$status" -eq $ERROR_BODY_LENGTH ]]
+}
+
+@test "overall validation missing jira" {
+  MESSAGE='feat(scope1): subject
+
+Commit about stuff\"plop \"
+
+2345'
+
+  run validate "$MESSAGE"
+  [[ "$status" -eq $ERROR_JIRA ]]
 }
 
 @test "overall validation" {

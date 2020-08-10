@@ -14,6 +14,7 @@ readonly ERROR_TYPE=4
 readonly ERROR_SCOPE=5
 readonly ERROR_SUBJECT=6
 readonly ERROR_BODY_LENGTH=7
+readonly ERROR_JIRA=8
 
 GLOBAL_HEADER=""
 GLOBAL_BODY=""
@@ -176,6 +177,31 @@ validate_body_length() {
   done <<< "$BODY"
 }
 
+need_jira() {
+  local TYPE=$1
+
+  case $TYPE in
+    feat)
+      echo 1
+      ;;
+    fix)
+      echo 1
+      ;;
+    *)
+      echo 0
+  esac
+}
+
+validate_jira() {
+  local TYPE=$1
+  local JIRA=$2
+
+  if [[ `need_jira "$TYPE"` -eq 1 && $JIRA = "" ]]; then
+     echo -e "${TYPE} need a jira reference"
+     exit $ERROR_JIRA
+  fi
+}
+
 validate() {
    local COMMIT_MSG="$1"
 
@@ -198,4 +224,6 @@ validate() {
    validate_subject "$SUBJECT"
 
    validate_body_length "$BODY"
+
+   validate_jira "$TYPE" "$JIRA"
 }
