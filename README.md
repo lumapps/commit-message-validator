@@ -178,6 +178,9 @@ Check all the commits between 2 references:
 
 Behind the hood, the script use `git log` to list all the commit thus any syntax allowed by git will be working.
 
+You can also use the pre-push commit validator, simply copy, `pre-push`, `validator.sh` and `check.sh` files
+in `.git/hooks` directory of your repository.
+
 <!-- ROADMAP -->
 
 ## Roadmap
