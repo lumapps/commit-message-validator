@@ -298,6 +298,81 @@ BROKEN:
   [ "$status" -eq 0 ]
 }
 
+@test "unknown commit type 'plop' should be rejected" {
+  run validate_type "plop"
+  [ "$status" -eq $ERROR_TYPE ]
+}
+
+@test "known commit type with trailing space should be rejected" {
+  run validate_type "feat "
+  [ "$status" -eq $ERROR_TYPE ]
+}
+
+@test "known commit type with capitalized letter should be rejected" {
+  run validate_type "Feat"
+  [ "$status" -eq $ERROR_TYPE ]
+}
+
+@test "commit type 'feat' should be ok" {
+  run validate_type "feat"
+  [ "$status" -eq 0 ]
+}
+
+@test "scope cannot be empty" {
+  run validate_scope ""
+  [ "$status" -eq $ERROR_SCOPE ]
+}
+
+@test "scope cannot be capitalized" {
+  run validate_scope "plopPlop"
+  [ "$status" -eq $ERROR_SCOPE ]
+}
+
+@test "scope cannot have space" {
+  run validate_scope "plop plop"
+  [ "$status" -eq $ERROR_SCOPE ]
+}
+
+@test "scope cannot have trailing space" {
+  run validate_scope "plop "
+  [ "$status" -eq $ERROR_SCOPE ]
+}
+
+@test "scope should allow simple kebab-case" {
+  run validate_scope "p2"
+  [ "$status" -eq 0 ]
+}
+
+@test "scope should allow kebab-case" {
+  run validate_scope "pl2op-plop1-plop-0001"
+  [ "$status" -eq 0 ]
+}
+
+@test "subject cannot be empty" {
+  run validate_subject ""
+  [ "$status" -eq $ERROR_SUBJECT ]
+}
+
+@test "subject cannot have trailing space" {
+  run validate_subject "plop "
+  [ "$status" -eq $ERROR_SUBJECT ]
+}
+
+@test "subject cannot start with a capitalized letter" {
+  run validate_subject "Plop"
+  [ "$status" -eq $ERROR_SUBJECT ]
+}
+
+@test "subject cannot end with a point" {
+  run validate_subject "plop."
+  [ "$status" -eq $ERROR_SUBJECT ]
+}
+
+@test "subject should allow sentences" {
+  run validate_subject "0002 dedezf ef zefzef zfeze fzef zf zef"
+  [ "$status" -eq 0 ]
+}
+
 @test "overall validation invalid structure" {
   MESSAGE='plop
 plop'
@@ -318,6 +393,39 @@ plop'
 
   run validate "$MESSAGE"
   [[ "$status" -eq $ERROR_HEADER_LENGTH ]]
+}
+
+@test "overall validation invalid type" {
+  MESSAGE='Feat(scope1): subject
+
+Commit about stuff\"plop \"
+
+LUM-2345'
+
+  run validate "$MESSAGE"
+  [[ "$status" -eq $ERROR_TYPE ]]
+}
+
+@test "overall validation invalid scope" {
+  MESSAGE='feat(scope 1): subject
+
+Commit about stuff\"plop \"
+
+LUM-2345'
+
+  run validate "$MESSAGE"
+  [[ "$status" -eq $ERROR_SCOPE ]]
+}
+
+@test "overall validation invalid subject" {
+  MESSAGE='feat(scope1): Subject
+
+Commit about stuff\"plop \"
+
+LUM-2345'
+
+  run validate "$MESSAGE"
+  [[ "$status" -eq $ERROR_SUBJECT ]]
 }
 
 @test "overall validation" {

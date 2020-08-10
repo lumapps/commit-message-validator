@@ -1,12 +1,18 @@
 #!/bin/bash -e
 
 readonly HEADER_PATTERN="^([^\(]+)\(([^\)]+)\): (.+)$"
+readonly TYPE_PATTERN="^(feat|fix|docs|refactor|test|chore|revert)$"
+readonly SCOPE_PATTERN="^([a-z][a-z0-9]*)(-[a-z0-9]+)*$"
+readonly SUBJECT_PATTERN="^([a-z0-9].*[^ ^\.])$"
 readonly JIRA_PATTERN="^([A-Z]{2,4}-[0-9]{1,6} ?)+$"
 readonly BROKE_PATTERN="^BROKEN:$"
 
 readonly ERROR_STRUCTURE=1
 readonly ERROR_HEADER=2
 readonly ERROR_HEADER_LENGTH=3
+readonly ERROR_TYPE=4
+readonly ERROR_SCOPE=5
+readonly ERROR_SUBJECT=6
 
 GLOBAL_HEADER=""
 GLOBAL_BODY=""
@@ -127,6 +133,33 @@ validate_header_length() {
   fi
 }
 
+validate_type() {
+  local TYPE=$1
+
+  if [[ ! $TYPE =~ $TYPE_PATTERN ]]; then
+     echo -e "commit type '$TYPE' is unknown"
+     exit $ERROR_TYPE
+  fi
+}
+
+validate_scope() {
+  local SCOPE=$1
+
+  if [[ ! $SCOPE =~ $SCOPE_PATTERN ]]; then
+     echo -e "commit scope '$SCOPE' is not kebab-case"
+     exit $ERROR_SCOPE
+  fi
+}
+
+validate_subject() {
+  local SUBJECT=$1
+
+  if [[ ! $SUBJECT =~ $SUBJECT_PATTERN ]]; then
+     echo -e "commit subject '$SUBJECT' should start with a lower case and not end with a '.'"
+     exit $ERROR_SUBJECT
+  fi
+}
+
 validate() {
    local COMMIT_MSG="$1"
 
@@ -143,4 +176,8 @@ validate() {
    local TYPE="$GLOBAL_TYPE"
    local SCOPE="$GLOBAL_SCOPE"
    local SUBJECT="$GLOBAL_SUBJECT"
+
+   validate_type "$TYPE"
+   validate_scope "$SCOPE"
+   validate_subject "$SUBJECT"
 }
