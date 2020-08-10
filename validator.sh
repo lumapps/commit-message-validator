@@ -6,6 +6,7 @@ readonly SCOPE_PATTERN="^([a-z][a-z0-9]*)(-[a-z0-9]+)*$"
 readonly SUBJECT_PATTERN="^([a-z0-9].*[^ ^\.])$"
 readonly JIRA_PATTERN="^([A-Z]{2,4}-[0-9]{1,6} ?)+$"
 readonly BROKE_PATTERN="^BROKEN:$"
+readonly TRAILING_SPACE_PATTERN=" +$"
 
 readonly ERROR_STRUCTURE=1
 readonly ERROR_HEADER=2
@@ -14,7 +15,8 @@ readonly ERROR_TYPE=4
 readonly ERROR_SCOPE=5
 readonly ERROR_SUBJECT=6
 readonly ERROR_BODY_LENGTH=7
-readonly ERROR_JIRA=8
+readonly ERROR_TRAILING_SPACE=8
+readonly ERROR_JIRA=9
 
 GLOBAL_HEADER=""
 GLOBAL_BODY=""
@@ -177,6 +179,19 @@ validate_body_length() {
   done <<< "$BODY"
 }
 
+validate_trailing_space() {
+  local BODY=$1
+  local LINE=""
+
+  while IFS= read -r LINE ;
+  do
+    if [[ $LINE =~ $TRAILING_SPACE_PATTERN ]]; then
+        echo -e "body message must not have trailing spaces"
+        exit $ERROR_TRAILING_SPACE
+    fi
+  done <<< "$BODY"
+}
+
 need_jira() {
   local TYPE=$1
 
@@ -225,6 +240,9 @@ validate() {
 
    validate_body_length "$BODY"
    validate_body_length "$FOOTER"
+
+   validate_trailing_space "$BODY"
+   validate_trailing_space "$FOOTER"
 
    validate_jira "$TYPE" "$JIRA"
 }

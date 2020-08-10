@@ -396,6 +396,35 @@ LUM-2345'
   [[ "$status" -eq 0 ]]
 }
 
+@test "body with trailing space on line should not be valid" {
+  MESSAGE='pdzofjzf '
+
+  run validate_trailing_space "$MESSAGE"
+  [[ "$status" -eq $ERROR_TRAILING_SPACE ]]
+}
+
+@test "body with trailing space on new line should not be valid" {
+  MESSAGE='
+rerer
+
+  
+LUM-2345'
+
+  run validate_trailing_space "$MESSAGE"
+  [[ "$status" -eq $ERROR_TRAILING_SPACE ]]
+}
+
+@test "body without trailing space should be valid" {
+  MESSAGE='
+rerer
+
+
+LUM-2345'
+
+  run validate_trailing_space "$MESSAGE"
+  [[ "$status" -eq 0 ]]
+}
+
 @test "features and fixes commits need jira reference" {
   [[ `need_jira "feat"` -eq 1 ]]
   [[ `need_jira "fix"` -eq 1 ]]
@@ -487,6 +516,15 @@ LUM-2345'
   [[ "$status" -eq $ERROR_BODY_LENGTH ]]
 }
 
+@test "overall validation invalid body trailing space" {
+  MESSAGE='chore(scope1): subject
+
+123456789012345678901234567890123456789012 '
+
+  run validate "$MESSAGE"
+  [[ "$status" -eq $ERROR_TRAILING_SPACE ]]
+}
+
 @test "overall validation invalid footer length" {
   MESSAGE='feat(scope1): subject
 
@@ -498,6 +536,19 @@ BROKEN:
 
   run validate "$MESSAGE"
   [[ "$status" -eq $ERROR_BODY_LENGTH ]]
+}
+
+@test "overall validation invalid footer trailing space" {
+  MESSAGE='feat(scope1): subject
+
+plop
+
+LUM-2345
+BROKEN:
+- 123456 '
+
+  run validate "$MESSAGE"
+  [[ "$status" -eq $ERROR_TRAILING_SPACE ]]
 }
 
 @test "overall validation missing jira" {

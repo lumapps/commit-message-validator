@@ -197,7 +197,7 @@ See the [open issues](https://github.com/lumapps/commit-msg-validator/issues) fo
 - [x] enforce the commit body length
 - [x] enforce the JIRA reference
 - [x] enforce the BROKEN part length
-- [ ] avoid trailing space
+- [x] avoid trailing space
 - [ ] allow automated revert commit
 - [ ] allow fixup! and squash! commit with an option
 
