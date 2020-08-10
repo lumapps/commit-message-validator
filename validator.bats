@@ -120,7 +120,7 @@ BROKEN:
   [[ $GLOBAL_HEADER == "plop plop" ]]
   [[ $GLOBAL_BODY == "" ]]
   [[ $GLOBAL_JIRA == "" ]]
-  [[ $GLOBAL_FOOTER == "- plop\n- plop\n" ]]
+  [[ $GLOBAL_FOOTER == "- plop"$'\n'"- plop"$'\n' ]]
 }
 
 @test "structure: valid commit message with header, jira and broken" {
@@ -135,7 +135,7 @@ BROKEN:
   [[ $GLOBAL_HEADER == "plop plop" ]]
   [[ $GLOBAL_BODY == "" ]]
   [[ $GLOBAL_JIRA == "ABC-1234" ]]
-  [[ $GLOBAL_FOOTER == "- plop\n- plop\n" ]]
+  [[ $GLOBAL_FOOTER == "- plop"$'\n'"- plop"$'\n' ]]
 }
 
 @test "structure: valid commit message with header and body" {
@@ -145,7 +145,7 @@ hello"
 
   validate_overall_structure "$COMMIT"
   [[ $GLOBAL_HEADER == "plop plop" ]]
-  [[ $GLOBAL_BODY == "hello\n" ]]
+  [[ $GLOBAL_BODY == "hello"$'\n' ]]
   [[ $GLOBAL_JIRA == "" ]]
   [[ $GLOBAL_FOOTER == "" ]]
 }
@@ -162,7 +162,7 @@ toto"
 
   validate_overall_structure "$COMMIT"
   [[ $GLOBAL_HEADER == "plop plop" ]]
-  [[ $GLOBAL_BODY == "hello\nplopplop\nplopplop\ntoto\n" ]]
+  [[ $GLOBAL_BODY == "hello"$'\n'"plopplop"$'\n'"plopplop"$'\n'"toto"$'\n' ]]
   [[ $GLOBAL_JIRA == "" ]]
   [[ $GLOBAL_FOOTER == "" ]]
 }
@@ -181,7 +181,7 @@ ABC-1234"
 
   validate_overall_structure "$COMMIT"
   [[ $GLOBAL_HEADER == "plop plop" ]]
-  [[ $GLOBAL_BODY == "hello\nplopplop\nplopplop\ntoto\n" ]]
+  [[ $GLOBAL_BODY == "hello"$'\n'"plopplop"$'\n'"plopplop"$'\n'"toto"$'\n' ]]
   [[ $GLOBAL_JIRA == "ABC-1234" ]]
   [[ $GLOBAL_FOOTER == "" ]]
 }
@@ -202,9 +202,9 @@ BROKEN:
 
   validate_overall_structure "$COMMIT"
   [[ $GLOBAL_HEADER == "plop plop" ]]
-  [[ $GLOBAL_BODY == "hello\nplopplop\nplopplop\ntoto\n" ]]
+  [[ $GLOBAL_BODY == "hello"$'\n'"plopplop"$'\n'"plopplop"$'\n'"toto"$'\n' ]]
   [[ $GLOBAL_JIRA == "" ]]
-  [[ $GLOBAL_FOOTER == "- plop\n- plop\n" ]]
+  [[ $GLOBAL_FOOTER == "- plop"$'\n'"- plop"$'\n' ]]
 }
 
 @test "structure: valid commit message with header, multiline body, jira and broken" {
@@ -224,9 +224,9 @@ BROKEN:
 
   validate_overall_structure "$COMMIT"
   [[ $GLOBAL_HEADER == "plop plop" ]]
-  [[ $GLOBAL_BODY == "hello\nplopplop\nplopplop\ntoto\n" ]]
+  [[ $GLOBAL_BODY == "hello"$'\n'"plopplop"$'\n'"plopplop"$'\n'"toto"$'\n' ]]
   [[ $GLOBAL_JIRA == "ABC-1234" ]]
-  [[ $GLOBAL_FOOTER == "- plop\n- plop\n" ]]
+  [[ $GLOBAL_FOOTER == "- plop"$'\n'"- plop"$'\n' ]]
 }
 
 @test "header overall should not allow 'type'" {
@@ -382,6 +382,7 @@ LUM-2345'
   run validate_body_length "$MESSAGE"
   [[ "$status" -eq $ERROR_BODY_LENGTH ]]
 }
+
 @test "body with 100 line length should be valid" {
   MESSAGE='
 1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
@@ -515,7 +516,8 @@ Commit about stuff\"plop \"
 
 Commit about stuff\"plop \" dezd
 
-plop
+12345678901234567890123456789012345678901234567890
+12345678901234567890123456789012345678901234567890
 
 LUM-2345
 BROKEN:

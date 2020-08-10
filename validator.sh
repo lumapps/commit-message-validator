@@ -63,7 +63,7 @@ validate_overall_structure() {
 	GLOBAL_JIRA=${BASH_REMATCH[0]}
       else
 	STATE="$READING_BODY"
-	GLOBAL_BODY="${GLOBAL_BODY}${LINE}\n"
+	GLOBAL_BODY=$GLOBAL_BODY$LINE$'\n'
       fi
 
     elif [[ $STATE -eq $READING_BODY ]]; then
@@ -80,7 +80,7 @@ validate_overall_structure() {
       if [[ $LINE = "" ]]; then
 	STATE=$START_TEXT
       else
-	GLOBAL_BODY="${GLOBAL_BODY}${LINE}\n"
+	GLOBAL_BODY=$GLOBAL_BODY$LINE$'\n'
       fi
 
     elif [[ $STATE -eq $READING_BROKEN ]]; then
@@ -97,7 +97,7 @@ validate_overall_structure() {
         exit $ERROR_STRUCTURE
       fi
 
-      GLOBAL_FOOTER="${GLOBAL_FOOTER}${LINE}\n"
+      GLOBAL_FOOTER=$GLOBAL_FOOTER$LINE$'\n'
 
     else
       echo -e "unknown state in parsing machine"
