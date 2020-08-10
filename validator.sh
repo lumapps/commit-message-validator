@@ -13,6 +13,7 @@ readonly ERROR_HEADER_LENGTH=3
 readonly ERROR_TYPE=4
 readonly ERROR_SCOPE=5
 readonly ERROR_SUBJECT=6
+readonly ERROR_BODY_LENGTH=7
 
 GLOBAL_HEADER=""
 GLOBAL_BODY=""
@@ -160,6 +161,21 @@ validate_subject() {
   fi
 }
 
+validate_body_length() {
+  local BODY=$1
+  local LINE=""
+
+  while IFS= read -r LINE ;
+  do
+    local LENGTH=`echo -n "$LINE" | wc -c`
+
+    if [ $LENGTH -gt 100 ]; then
+        echo -e "body message line length is more than 100 charaters"
+        exit $ERROR_BODY_LENGTH
+    fi
+  done <<< "$BODY"
+}
+
 validate() {
    local COMMIT_MSG="$1"
 
@@ -180,4 +196,6 @@ validate() {
    validate_type "$TYPE"
    validate_scope "$SCOPE"
    validate_subject "$SUBJECT"
+
+   validate_body_length "$BODY"
 }

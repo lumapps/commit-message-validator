@@ -188,12 +188,13 @@ See the [open issues](https://github.com/lumapps/commit-msg-validator/issues) fo
 - [x] enforce the overall commit message structure
 - [x] enforce the overall commit header structure
 - [x] enforce the overall commit header lenght
-- [ ] enforce the commit body length
-- [ ] enforce the JIRA reference
-- [ ] enforce the BROKEN part
 - [x] enforce the commit type
 - [x] enforce the commit scope
 - [x] enforce the commit subject
+- [x] enforce the commit body length
+- [ ] enforce the JIRA reference
+- [ ] enforce the BROKEN part
+- [ ] avoid trailing space
 - [ ] allow automated revert commit
 - [ ] allow fixup! and squash! commit with an option
 
