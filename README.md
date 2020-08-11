@@ -79,14 +79,11 @@ Must be one of the following:
 - **refactor**: A code change that neither fixes a bug or adds a feature
 - **test**: Adding missing tests or correcting existing tests
 - **chore**: Changes to the build process or auxiliary tools and libraries such as distribution generation
-- **revert**: Reverts a previous commit
 
 ### Scope
 
 The scope could be anything specifying place of the commit change. For example `notification', 'dropdown', etc.
 The scope must be written in [kebab-case](https://en.wikipedia.org/wiki/Letter_case#Special_case_styles).
-
-If the commit reverts a previous commit, it should contains the reverted commit SHA1.
 
 ### Subject
 
@@ -97,12 +94,9 @@ Here are some recommandation for writing your subject:
 - don't capitalize first letter
 - no "." (dot) at the end
 
-If the commit reverts a previous commit, it should contains the title of the reverted commit.
-
 ### Body
 
 The body should include the motivation for the change and contrast this with previous behavior.
-If the commit reverts a previous commit, explain why you reverted it.
 
 ### Footer
 
@@ -124,6 +118,28 @@ BROKEN:
 first thing broken
 second thing broken
 ```
+
+### Revert
+
+The proper for revert based on Angular commit message convention should be:
+
+```
+revert: feat(toto-service): provide toto for all
+
+This reverts commit <sha1>.
+```
+
+However, the default git behavior, that cannot be easily overiden is:
+
+```
+Revert "feat(toto-service): provide toto for all"
+
+This reverts commit <sha1>.
+```
+
+Thus we won't enforce one or the other, we will only enfore:
+* starting the commit title with revert (with a capitalized letter or not)
+* having the sentence "This reverts commit <sha1>"
 
 ### Built With
 
@@ -198,7 +214,7 @@ See the [open issues](https://github.com/lumapps/commit-msg-validator/issues) fo
 - [x] enforce the JIRA reference
 - [x] enforce the BROKEN part length
 - [x] avoid trailing space
-- [ ] allow automated revert commit
+- [x] allow automated revert commit
 - [ ] allow fixup! and squash! commit with an option
 
 <!-- CONTRIBUTING -->

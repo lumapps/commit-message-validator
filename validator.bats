@@ -264,6 +264,16 @@ BROKEN:
   [ "$status" -eq $ERROR_HEADER ]
 }
 
+@test "header overall should allow 'revert: type(scope): message'" {
+  validate_header "revert: type(scope): message"
+  [[ $GLOBAL_TYPE == "revert" ]]
+}
+
+@test "header overall should allow 'Revert \#type(scope): message\"'" {
+  validate_header "Revert \"type(scope): message\""
+  [[ $GLOBAL_TYPE == "revert" ]]
+}
+
 @test "header overall should allow 'type(scope): message'" {
   validate_header "type(scope): message"
   [[ $GLOBAL_TYPE == "type" ]]
@@ -425,6 +435,26 @@ LUM-2345'
   [[ "$status" -eq 0 ]]
 }
 
+@test "revert body without commit sha1 should be refused" {
+  MESSAGE='rerer
+
+LUM-2345'
+
+  run validate_revert "$MESSAGE"
+  [[ "$status" -eq $ERROR_REVERT ]]
+}
+
+@test "revert body with commit sha1 should be valid" {
+  MESSAGE='rerer
+
+This reverts commit 1234567890.
+
+LUM-2345'
+
+  run validate_revert "$MESSAGE"
+  [[ "$status" -eq 0 ]]
+}
+
 @test "features and fixes commits need jira reference" {
   [[ `need_jira "feat"` -eq 1 ]]
   [[ `need_jira "fix"` -eq 1 ]]
@@ -565,6 +595,24 @@ Commit about stuff\"plop \"
 @test "overall validation" {
   MESSAGE='feat(scope1): subject
 
+Commit about stuff\"plop \" dezd
+
+12345678901234567890123456789012345678901234567890
+12345678901234567890123456789012345678901234567890
+
+LUM-2345
+BROKEN:
+- plop
+- plop'
+
+  run validate "$MESSAGE"
+  [[ "$status" -eq 0 ]]
+}
+
+@test "overall revert validation" {
+  MESSAGE='Revert "feat(scope1): subject"
+
+This reverts commit 12345678900.
 Commit about stuff\"plop \" dezd
 
 12345678901234567890123456789012345678901234567890

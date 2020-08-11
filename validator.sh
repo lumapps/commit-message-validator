@@ -7,12 +7,14 @@ if [[ $ZSH_NAME != "" ]]; then
 fi
 
 readonly HEADER_PATTERN="^([^\(]+)\(([^\)]+)\): (.+)$"
-readonly TYPE_PATTERN="^(feat|fix|docs|refactor|test|chore|revert)$"
+readonly TYPE_PATTERN="^(feat|fix|docs|refactor|test|chore)$"
 readonly SCOPE_PATTERN="^([a-z][a-z0-9]*)(-[a-z0-9]+)*$"
 readonly SUBJECT_PATTERN="^([a-z0-9].*[^ ^\.])$"
 readonly JIRA_PATTERN="^([A-Z]{2,4}-[0-9]{1,6} ?)+$"
 readonly BROKE_PATTERN="^BROKEN:$"
 readonly TRAILING_SPACE_PATTERN=" +$"
+readonly REVERT_HEADER_PATTERN="^[R|r]evert[: ].*$"
+readonly REVERT_COMMIT_PATTERN="^This reverts commit ([a-f0-9]+)"
 
 readonly ERROR_STRUCTURE=1
 readonly ERROR_HEADER=2
@@ -23,6 +25,7 @@ readonly ERROR_SUBJECT=6
 readonly ERROR_BODY_LENGTH=7
 readonly ERROR_TRAILING_SPACE=8
 readonly ERROR_JIRA=9
+readonly ERROR_REVERT=10
 
 GLOBAL_HEADER=""
 GLOBAL_BODY=""
@@ -123,7 +126,9 @@ validate_overall_structure() {
 validate_header() {
   local HEADER="$1"
 
-  if [[ $HEADER =~ $HEADER_PATTERN ]]; then
+  if [[ $HEADER =~ $REVERT_HEADER_PATTERN ]]; then
+     GLOBAL_TYPE="revert"
+  elif [[ $HEADER =~ $HEADER_PATTERN ]]; then
      GLOBAL_TYPE=${BASH_REMATCH[1]}
      GLOBAL_SCOPE=${BASH_REMATCH[2]}
      GLOBAL_SUBJECT=${BASH_REMATCH[3]}
@@ -223,6 +228,24 @@ validate_jira() {
   fi
 }
 
+validate_revert() {
+  local BODY=$1
+  local LINE=""
+  local REVERTED_COMMIT=""
+
+  while IFS= read -r LINE ;
+  do
+    if [[ $LINE =~ $REVERT_COMMIT_PATTERN ]]; then
+	REVERTED_COMMIT=${BASH_REMATCH[1]}
+    fi
+  done <<< "$BODY"
+
+  if [[ "$REVERTED_COMMIT" = "" ]]; then
+    echo -e "revert commit should contain the reverted sha1"
+    exit $ERROR_REVERT
+  fi
+}
+
 validate() {
    local COMMIT_MSG="$1"
 
@@ -234,21 +257,26 @@ validate() {
    local FOOTER="$GLOBAL_FOOTER"
 
    validate_header "$HEADER"
-   validate_header_length "$HEADER"
 
    local TYPE="$GLOBAL_TYPE"
    local SCOPE="$GLOBAL_SCOPE"
    local SUBJECT="$GLOBAL_SUBJECT"
 
-   validate_type "$TYPE"
-   validate_scope "$SCOPE"
-   validate_subject "$SUBJECT"
+   if [[ $TYPE = "revert" ]]; then
+     validate_revert "$BODY"
+   else
+     validate_header_length "$HEADER"
 
-   validate_body_length "$BODY"
-   validate_body_length "$FOOTER"
+     validate_type "$TYPE"
+     validate_scope "$SCOPE"
+     validate_subject "$SUBJECT"
 
-   validate_trailing_space "$BODY"
-   validate_trailing_space "$FOOTER"
+     validate_body_length "$BODY"
+     validate_body_length "$FOOTER"
 
-   validate_jira "$TYPE" "$JIRA"
+     validate_trailing_space "$BODY"
+     validate_trailing_space "$FOOTER"
+
+     validate_jira "$TYPE" "$JIRA"
+   fi
 }
