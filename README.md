@@ -216,6 +216,8 @@ See the [open issues](https://github.com/lumapps/commit-msg-validator/issues) fo
 - [x] avoid trailing space
 - [x] allow automated revert commit
 - [ ] allow fixup! and squash! commit with an option
+- [ ] allow to not check JIRA reference with an option
+- [ ] enforce subject length (3 words at least)
 
 <!-- CONTRIBUTING -->
 
