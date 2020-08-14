@@ -13,6 +13,7 @@ readonly BROKE_PATTERN="^BROKEN:$"
 readonly TRAILING_SPACE_PATTERN=" +$"
 readonly REVERT_HEADER_PATTERN="^[R|r]evert[: ].*$"
 readonly REVERT_COMMIT_PATTERN="^This reverts commit ([a-f0-9]+)"
+readonly TEMP_HEADER_PATTERN="^(fixup!|squash!).*$"
 
 readonly ERROR_STRUCTURE=1
 readonly ERROR_HEADER=2
@@ -124,7 +125,9 @@ validate_overall_structure() {
 validate_header() {
   local HEADER="$1"
 
-  if [[ $HEADER =~ $REVERT_HEADER_PATTERN ]]; then
+  if [[ -v COMMIT_VALIDATOR_ALLOW_TEMP && $HEADER =~ $TEMP_HEADER_PATTERN ]]; then
+     GLOBAL_TYPE="temp"
+  elif [[ $HEADER =~ $REVERT_HEADER_PATTERN ]]; then
      GLOBAL_TYPE="revert"
   elif [[ $HEADER =~ $HEADER_PATTERN ]]; then
      GLOBAL_TYPE=${BASH_REMATCH[1]}
@@ -268,7 +271,9 @@ validate() {
    local SCOPE="$GLOBAL_SCOPE"
    local SUBJECT="$GLOBAL_SUBJECT"
 
-   if [[ $TYPE = "revert" ]]; then
+   if [[ $TYPE = "temp" ]]; then
+     echo "ignoring temporary commit"
+   elif [[ $TYPE = "revert" ]]; then
      validate_revert "$BODY"
    else
      validate_header_length "$HEADER"

@@ -200,6 +200,7 @@ in `.git/hooks` directory of your repository.
 ### OPTIONS
 
 - if `COMMIT_VALIDATOR_NO_JIRA` environment variable is set, no validation is done on JIRA refs.
+- if `COMMIT_VALIDATOR_ALLOW_TEMP` environment variable is set, no validation is done on `fixup!` and `squash!` commits.
 
 <!-- ROADMAP -->
 
@@ -219,7 +220,7 @@ See the [open issues](https://github.com/lumapps/commit-msg-validator/issues) fo
 - [x] enforce the BROKEN part length
 - [x] avoid trailing space
 - [x] allow automated revert commit
-- [ ] allow fixup! and squash! commit with an option
+- [x] allow fixup! and squash! commit with an option
 - [x] allow to not check JIRA reference with an option
 - [ ] enforce subject length (3 words at least)
 

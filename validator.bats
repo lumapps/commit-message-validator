@@ -264,6 +264,26 @@ BROKEN:
   [ "$status" -eq $ERROR_HEADER ]
 }
 
+@test "header overall should allow fixup if env set" {
+  COMMIT_VALIDATOR_ALLOW_TEMP= validate_header "fixup! plopezrr"
+  [[ $GLOBAL_TYPE == "temp" ]]
+}
+
+@test "header overall should allow squash if env set" {
+  COMMIT_VALIDATOR_ALLOW_TEMP= validate_header "squash! plopezrr"
+  [[ $GLOBAL_TYPE == "temp" ]]
+}
+
+@test "header overall should reject fixup if env not set" {
+  run validate_header "fixup! plopezrr"
+  [[ "$status" -eq $ERROR_HEADER ]]
+}
+
+@test "header overall should reject squash if env not set" {
+  run validate_header "squash! plopezrr"
+  [[ "$status" -eq $ERROR_HEADER ]]
+}
+
 @test "header overall should allow 'revert: type(scope): message'" {
   validate_header "revert: type(scope): message"
   [[ $GLOBAL_TYPE == "revert" ]]
@@ -630,4 +650,38 @@ BROKEN:
 
   run validate "$MESSAGE"
   [[ "$status" -eq 0 ]]
+}
+
+@test "overall fixup! validation" {
+  MESSAGE='fixup! plepozkfopezr
+
+Commit about stuff\"plop \" dezd
+
+12345678901234567890123456789012345678901234567890
+12345678901234567890123456789012345678901234567890
+
+LUM-2345
+BROKEN:
+- plop
+- plop'
+
+  COMMIT_VALIDATOR_ALLOW_TEMP= run validate "$MESSAGE"
+  [[ "$status" -eq 0 ]]
+}
+
+@test "overall fixup! rejection" {
+  MESSAGE='fixup! plepozkfopezr
+
+Commit about stuff\"plop \" dezd
+
+12345678901234567890123456789012345678901234567890
+12345678901234567890123456789012345678901234567890
+
+LUM-2345
+BROKEN:
+- plop
+- plop'
+
+  run validate "$MESSAGE"
+  [[ "$status" -eq $ERROR_HEADER ]]
 }
