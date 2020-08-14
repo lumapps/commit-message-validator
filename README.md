@@ -197,6 +197,10 @@ Behind the hood, the script use `git log` to list all the commit thus any syntax
 You can also use the pre-push commit validator, simply copy, `pre-push`, `validator.sh` and `check.sh` files
 in `.git/hooks` directory of your repository.
 
+### OPTIONS
+
+- if `COMMIT_VALIDATOR_NO_JIRA` environment variable is set, no validation is done on JIRA refs.
+
 <!-- ROADMAP -->
 
 ## Roadmap
@@ -216,7 +220,7 @@ See the [open issues](https://github.com/lumapps/commit-msg-validator/issues) fo
 - [x] avoid trailing space
 - [x] allow automated revert commit
 - [ ] allow fixup! and squash! commit with an option
-- [ ] allow to not check JIRA reference with an option
+- [x] allow to not check JIRA reference with an option
 - [ ] enforce subject length (3 words at least)
 
 <!-- CONTRIBUTING -->

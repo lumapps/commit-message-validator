@@ -460,6 +460,11 @@ LUM-2345'
   [[ `need_jira "fix"` -eq 1 ]]
 }
 
+@test "features and fixes commits don't need jira reference if set" {
+  [[ `COMMIT_VALIDATOR_NO_JIRA= need_jira "feat"` -eq 0 ]]
+  [[ `COMMIT_VALIDATOR_NO_JIRA= need_jira "fix"` -eq 0 ]]
+}
+
 @test "other commits don't need jira reference" {
   [[ `need_jira "docs"` -eq 0 ]]
   [[ `need_jira "test"` -eq 0 ]]

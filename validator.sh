@@ -208,16 +208,20 @@ validate_trailing_space() {
 need_jira() {
   local TYPE=$1
 
-  case $TYPE in
-    feat)
-      echo 1
-      ;;
-    fix)
-      echo 1
-      ;;
-    *)
-      echo 0
-  esac
+  if [[ -v COMMIT_VALIDATOR_NO_JIRA ]]; then
+    echo 0
+  else
+    case $TYPE in
+      feat)
+        echo 1
+        ;;
+      fix)
+        echo 1
+        ;;
+      *)
+        echo 0
+    esac
+  fi
 }
 
 validate_jira() {
