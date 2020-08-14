@@ -1,6 +1,8 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 
-if [[ $ZSH_NAME != "" ]]; then
+set -eu
+
+if [[ -v ZSH_NAME ]]; then
   setopt BASH_REMATCH
   setopt RE_MATCH_PCRE
   setopt KSH_ARRAYS

@@ -1,6 +1,4 @@
-#!/bin/bash -e
-
-if [[ $ZSH_NAME != "" ]]; then
+if [[ -v ZSH_NAME ]]; then
   setopt BASH_REMATCH
   setopt RE_MATCH_PCRE
   setopt KSH_ARRAYS
@@ -140,9 +138,11 @@ validate_header() {
 
 validate_header_length() {
   local HEADER="$1"
-  local LENGTH=`echo -n "$HEADER" | wc -c`
+  local LENGTH
 
-  if [ $LENGTH -gt 70 ]; then
+  LENGTH="$(echo -n "$HEADER" | wc -c)"
+
+  if [[ $LENGTH -gt 70 ]]; then
       echo -e "commit header length is more than 70 charaters"
       exit $ERROR_HEADER_LENGTH
   fi
@@ -181,9 +181,11 @@ validate_body_length() {
 
   while IFS= read -r LINE ;
   do
-    local LENGTH=`echo -n "$LINE" | wc -c`
+    local LENGTH
 
-    if [ $LENGTH -gt 100 ]; then
+    LENGTH="$(echo -n "$LINE" | wc -c)"
+
+    if [[ $LENGTH -gt 100 ]]; then
         echo -e "body message line length is more than 100 charaters"
         exit $ERROR_BODY_LENGTH
     fi
@@ -222,7 +224,7 @@ validate_jira() {
   local TYPE=$1
   local JIRA=$2
 
-  if [[ `need_jira "$TYPE"` -eq 1 && $JIRA = "" ]]; then
+  if [[ "$(need_jira "$TYPE")" -eq "1" && -z "${JIRA:-}" ]]; then
      echo -e "${TYPE} need a jira reference"
      exit $ERROR_JIRA
   fi
