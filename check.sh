@@ -8,7 +8,8 @@ if [[ -v ZSH_NAME ]]; then
   setopt KSH_ARRAYS
 fi
 
-source ./validator.sh
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+source $DIR/validator.sh
 
 COMMITS=`git log --no-merges --pretty="%H" --no-decorate $1`
 
