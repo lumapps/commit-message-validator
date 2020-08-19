@@ -199,8 +199,8 @@ in `.git/hooks` directory of your repository.
 
 ### OPTIONS
 
-- if `COMMIT_VALIDATOR_NO_JIRA` environment variable is set, no validation is done on JIRA refs.
-- if `COMMIT_VALIDATOR_ALLOW_TEMP` environment variable is set, no validation is done on `fixup!` and `squash!` commits.
+- if `COMMIT_VALIDATOR_NO_JIRA` environment variable is not empty, no validation is done on JIRA refs.
+- if `COMMIT_VALIDATOR_ALLOW_TEMP` environment variable is not empty, no validation is done on `fixup!` and `squash!` commits.
 
 ## Getting Started with github action
 

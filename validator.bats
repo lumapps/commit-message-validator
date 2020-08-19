@@ -264,14 +264,24 @@ BROKEN:
   [ "$status" -eq $ERROR_HEADER ]
 }
 
-@test "header overall should allow fixup if env set" {
-  COMMIT_VALIDATOR_ALLOW_TEMP= validate_header "fixup! plopezrr"
+@test "header overall should allow fixup if env not empty" {
+  COMMIT_VALIDATOR_ALLOW_TEMP=1 validate_header "fixup! plopezrr"
   [[ $GLOBAL_TYPE == "temp" ]]
 }
 
-@test "header overall should allow squash if env set" {
-  COMMIT_VALIDATOR_ALLOW_TEMP= validate_header "squash! plopezrr"
+@test "header overall should allow squash if env not empty" {
+  COMMIT_VALIDATOR_ALLOW_TEMP=1 validate_header "squash! plopezrr"
   [[ $GLOBAL_TYPE == "temp" ]]
+}
+
+@test "header overall should reject fixup if env empty" {
+  COMMIT_VALIDATOR_ALLOW_TEMP= run validate_header "fixup! plopezrr"
+  [[ "$status" -eq $ERROR_HEADER ]]
+}
+
+@test "header overall should reject squash if env empty" {
+  COMMIT_VALIDATOR_ALLOW_TEMP= run validate_header "squash! plopezrr"
+  [[ "$status" -eq $ERROR_HEADER ]]
 }
 
 @test "header overall should reject fixup if env not set" {
@@ -480,9 +490,14 @@ LUM-2345'
   [[ `need_jira "fix"` -eq 1 ]]
 }
 
-@test "features and fixes commits don't need jira reference if set" {
-  [[ `COMMIT_VALIDATOR_NO_JIRA= need_jira "feat"` -eq 0 ]]
-  [[ `COMMIT_VALIDATOR_NO_JIRA= need_jira "fix"` -eq 0 ]]
+@test "features and fixes commits need jira reference if env empty" {
+  [[ `COMMIT_VALIDATOR_NO_JIRA= need_jira "feat"` -eq 1 ]]
+  [[ `COMMIT_VALIDATOR_NO_JIRA= need_jira "fix"` -eq 1 ]]
+}
+
+@test "features and fixes commits don't need jira reference if env non empty" {
+  [[ `COMMIT_VALIDATOR_NO_JIRA=1 need_jira "feat"` -eq 0 ]]
+  [[ `COMMIT_VALIDATOR_NO_JIRA=1 need_jira "fix"` -eq 0 ]]
 }
 
 @test "other commits don't need jira reference" {
@@ -665,7 +680,7 @@ BROKEN:
 - plop
 - plop'
 
-  COMMIT_VALIDATOR_ALLOW_TEMP= run validate "$MESSAGE"
+  COMMIT_VALIDATOR_ALLOW_TEMP=1 run validate "$MESSAGE"
   [[ "$status" -eq 0 ]]
 }
 

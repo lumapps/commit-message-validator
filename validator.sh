@@ -125,7 +125,7 @@ validate_overall_structure() {
 validate_header() {
   local HEADER="$1"
 
-  if [[ -v COMMIT_VALIDATOR_ALLOW_TEMP && $HEADER =~ $TEMP_HEADER_PATTERN ]]; then
+  if [[ ! -z "${COMMIT_VALIDATOR_ALLOW_TEMP:-}" && $HEADER =~ $TEMP_HEADER_PATTERN ]]; then
      GLOBAL_TYPE="temp"
   elif [[ $HEADER =~ $REVERT_HEADER_PATTERN ]]; then
      GLOBAL_TYPE="revert"
@@ -211,7 +211,7 @@ validate_trailing_space() {
 need_jira() {
   local TYPE=$1
 
-  if [[ -v COMMIT_VALIDATOR_NO_JIRA ]]; then
+  if [[ ! -z "${COMMIT_VALIDATOR_NO_JIRA:-}" ]]; then
     echo 0
   else
     case $TYPE in
