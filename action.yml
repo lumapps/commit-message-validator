@@ -1,0 +1,30 @@
+name: 'Commit message validator'
+description: 'Enforce angular commit message convention with minimal dependancy only git and bash.'
+author: 'Sébastien Boulle'
+branding:
+  icon: 'check-square'
+  color: 'green'
+inputs:
+  no_jira:
+    description: 'If not empty, no validation is done on JIRA refs.'
+    required: false
+  allow_temp:
+    description: 'If not empty, no validation is done on `fixup!` and `squash!` commits.'
+    required: false
+runs:
+  using: "composite"
+  steps:
+    - name: Ensure that base is fetched
+      run: git fetch origin ${{ github.event.pull_request.base.sha }}
+      shell: bash
+
+    - name: Ensure that head is fetched
+      run: git fetch origin ${{ github.event.pull_request.head.sha }}
+      shell: bash
+
+    - name: Validation
+      run: ${{ github.action_path }}/check.sh ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}
+      env:
+        no_jira: ${{ inputs.no_jira }}
+        allow_temp: ${{ inputs.allow_temp }}
+      shell: bash
