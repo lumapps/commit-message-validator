@@ -65,6 +65,7 @@ The header has a special format that includes a **type**, a **scope** and a **su
 
 - The first line of the commit message (the "Subject") cannot be longer than 70 characters.
 - Any other line of the commit message cannot be longer 100 characters!
+- The body and footer are optional, but depends on the type some information can be mandatory.
 
 This allows the message to be easier to read on github as well as in various git tools.
 
@@ -97,11 +98,15 @@ Here are some recommandation for writing your subject:
 ### Body
 
 The body should include the motivation for the change and contrast this with previous behavior.
+It is optional but highly recommended for any impacting changes.
 
 ### Footer
 
 The footer should contain any information about **Breaking Changes** and is also the place to
 reference JIRA ticket related to this commit.
+
+The footer is optional but for **feat** and **fix** type the JIRA reference is mandatory.
+
 The breaking changes must be at the end of the commit with only "BROKEN:" before the list of breaking changes.
 They must be each on a new line.
 
