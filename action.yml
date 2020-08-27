@@ -25,6 +25,6 @@ runs:
     - name: Validation
       run: ${{ github.action_path }}/check.sh ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}
       env:
-        no_jira: ${{ inputs.no_jira }}
-        allow_temp: ${{ inputs.allow_temp }}
+        COMMIT_VALIDATOR_NO_JIRA: ${{ inputs.no_jira }}
+        COMMIT_VALIDATOR_ALLOW_TEMP: ${{ inputs.allow_temp }}
       shell: bash
