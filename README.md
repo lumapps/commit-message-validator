@@ -207,6 +207,16 @@ in `.git/hooks` directory of your repository.
 - if `COMMIT_VALIDATOR_NO_JIRA` environment variable is not empty, no validation is done on JIRA refs.
 - if `COMMIT_VALIDATOR_ALLOW_TEMP` environment variable is not empty, no validation is done on `fixup!` and `squash!` commits.
 
+### Commit template
+
+You might want to use the predefined commit template in order to keep the main information under hand.
+
+For that, you have to add the following lines in your repository's gitconfig (located at `<project_root>/.gitconfig`).
+```conf
+[commit]
+    template = /path/to/git-commit-template
+```
+
 ## Getting Started with github action
 
 To enable the action simply create the .github/workflows/commit-message-validator.yml file with the following content:
