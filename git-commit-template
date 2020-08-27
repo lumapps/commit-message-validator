@@ -1,0 +1,53 @@
+type(scope): subject
+
+# Body
+
+# Footer
+
+
+## Types:
+# feat: A new feature
+# fix:  A bug fix
+# docs: Documentation only changes
+# lint: Changes that do not affect the meaning of the code (white-space,
+#       formatting, missing semicolons, etc)
+# refactor: A code change that neither fixes a bug or adds a feature
+# test: Adding missing tests or correcting existing tests
+# chore: Changes to the build process or auxiliary tools and libraries such as
+#        distribution generation
+
+## Scope
+# The scope could be anything specifying place of the commit change.
+# For example `notification', 'dropdown', etc. The scope must be written in
+# kebab-case.
+
+## Subject
+# A brief but meaningfull description of the change. Here are some
+# recommandation for writing your subject:
+# - use the imperative, present tense: "change" not "changed" nor "changes"
+# - don't capitalize first letter
+# - no "." (dot) at the end
+
+## Body
+# The body should include the motivation for the change and contrast this with
+# previous behavior.
+# It is optional but highly recommended for any impacting changes.
+
+## Footer
+# The footer should contain any information about Breaking Changes and is also
+# the place to reference JIRA ticket related to this commit.
+# The footer is optional but for feat and fix type the JIRA reference is
+# mandatory.
+# The breaking changes must be at the end of the commit with only "BROKEN:"
+# before the list of breaking changes. They must be each on a new line.
+
+## Example
+# feat(toto-service): provide toto for all
+#
+# Before we had to do another thing. There was this and this problem.
+# Now, by using "toto", it's simpler and the problems are managed.
+#
+# LUM-3462
+# BROKEN:
+# first thing broken
+# second thing broken
