@@ -232,7 +232,7 @@ validate_jira() {
   local JIRA=$2
 
   if [[ "$(need_jira "$TYPE")" -eq "1" && -z "${JIRA:-}" ]]; then
-     echo -e "${TYPE} need a jira reference"
+     echo -e "commits with type '${TYPE}' need to include a reference to a JIRA ticket, by adding the project prefix and the issue number to the commit message, this could be done easily with: git commit -m 'feat(widget): add a wonderful widget' -m LUM-1234"
      exit $ERROR_JIRA
   fi
 }
