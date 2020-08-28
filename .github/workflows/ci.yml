@@ -1,0 +1,20 @@
+name: 'Automated tests'
+
+on:
+  [pull_request, push]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install bats
+      run: |
+        git clone https://github.com/bats-core/bats-core.git $HOME/bats-core
+        sudo $HOME/bats-core/install.sh /usr/local
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Unit tests on Validator
+      run: bats ./validator.bats
