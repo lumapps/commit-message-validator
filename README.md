@@ -247,6 +247,24 @@ jobs:
 - if `no_jira` is not empty, no validation is done on JIRA refs.
 - if `allow_temp` is not empty, no validation is done on `fixup!` and `squash!` commits.
 
+## Add pre-commit plugin
+
+If you are using [pre-commit](https://pre-commit.com/) in you repository, you can add this to your configuration so commit messages are checked locally:
+
+Into `.pre-commit-config.yaml`:
+```yaml
+...
+repos:
+...
+- repo: https://github.com/lumapps/commit-message-validator
+  rev: master
+  hooks:
+    - id: commit-message-validator
+      stages: [commit-msg]
+...
+```
+Then run `pre-commit install --hook-type commit-msg` to install the `commit-message-validator`
+
 <!-- ROADMAP -->
 
 ## Roadmap
