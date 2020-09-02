@@ -1,0 +1,27 @@
+---
+repos:
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.24.2
+    hooks:
+      - id: yamllint
+        args: [-c=./local/yamllint_config.yaml]
+
+  - repo: https://github.com/frnmst/md-toc
+    rev: master  # or a specific git tag from md-toc
+    hooks:
+      - id: md-toc
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-executables-have-shebangs
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: debug-statements
+      - id: check-symlinks
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        exclude: (.github/CODEOWNERS|validator.bats)
