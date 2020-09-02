@@ -9,7 +9,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <a href="https://github.com/lumapps/commit-msg-validator">
+  <a href="https://github.com/lumapps/commit-message-validator">
     <img src="images/stamp.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -18,12 +18,12 @@
   <p align="center">
     Enforce angular commit message convention with minimal dependancy only git and bash.
     <br />
-    <a href="https://github.com/lumapps/commit-msg-validator"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/lumapps/commit-message-validator"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/lumapps/commit-msg-validator/issues">Report Bug</a>
+    <a href="https://github.com/lumapps/commit-message-validator/issues">Report Bug</a>
     ·
-    <a href="https://github.com/lumapps/commit-msg-validator/issues">Request Feature</a>
+    <a href="https://github.com/lumapps/commit-message-validator/issues">Request Feature</a>
   </p>
 </p>
 
@@ -173,10 +173,10 @@ sudo apt install bats
 
 ### Installation
 
-1. Clone the commit-msg-validator
+1. Clone the commit-message-validator
 
 ```sh
-git clone https://github.com/lumapps/commit-msg-validator.git
+git clone https://github.com/lumapps/commit-message-validator.git
 ```
 
 That's all, your ready to go !
@@ -251,7 +251,7 @@ jobs:
 
 ## Roadmap
 
-See the [open issues](https://github.com/lumapps/commit-msg-validator/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/lumapps/commit-message-validator/issues) for a list of proposed features (and known issues).
 
 - [x] list all the commit, and run validation on each
 - [x] enforce the overall commit message structure
@@ -292,7 +292,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Project Link: [https://github.com/lumapps/commit-msg-validator](https://github.com/lumapps/commit-msg-validator)
+Project Link: [https://github.com/lumapps/commit-message-validator](https://github.com/lumapps/commit-message-validator)
 
 <!-- ACKNOWLEDGEMENTS -->
 
