@@ -1,0 +1,6 @@
+---
+- id: commit-message-validator
+  name: Commit Message Validator
+  description: Checks that commit messages are compliant with Lumapps rules.
+  entry: check_message.sh
+  language: script
