@@ -261,9 +261,15 @@ repos:
   hooks:
     - id: commit-message-validator
       stages: [commit-msg]
+      args: [--allow-temp]
 ...
 ```
 Then run `pre-commit install --hook-type commit-msg` to install the `commit-message-validator`
+
+### OPTIONS
+
+- if `no_jira` is set, no validation is done on JIRA refs.
+- if `allow_temp` is set, no validation is done on `fixup!` and `squash!` commits.
 
 <!-- ROADMAP -->
 
