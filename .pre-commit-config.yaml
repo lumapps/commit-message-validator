@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: ./
-    rev: 1d903d35d82a0787e25d22315d62022652880c3b
+    rev: master
     hooks:
       - id: commit-message-validator
         stages: [commit-msg]
