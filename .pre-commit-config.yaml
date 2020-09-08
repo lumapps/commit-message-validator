@@ -1,5 +1,12 @@
 ---
 repos:
+  - repo: ./
+    rev: master
+    hooks:
+      - id: commit-message-validator
+        stages: [commit-msg]
+        args: [--no-jira, --allow-temp]
+
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.24.2
     hooks:

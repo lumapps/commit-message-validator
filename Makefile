@@ -13,6 +13,7 @@ pre-commit=./venv/bin/pre-commit
 venv:
 	python3.7 -m venv venv
 	$(pip) install pre-commit
+	$(pre-commit) install -t commit-msg
 
 lint:
 	$(pre-commit) run --all-files
