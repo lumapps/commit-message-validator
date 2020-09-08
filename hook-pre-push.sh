@@ -5,6 +5,8 @@ url="$2"
 
 z40=0000000000000000000000000000000000000000
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 while read local_ref local_sha remote_ref remote_sha
 do
 	if [ "$local_sha" = $z40 ]
@@ -21,7 +23,7 @@ do
 			range="$remote_sha..$local_sha"
 		fi
 
-		bash ./check.sh "$range"
+		bash $DIR/check.sh "$range"
 	fi
 done
 
