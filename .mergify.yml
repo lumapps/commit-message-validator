@@ -1,0 +1,9 @@
+pull_request_rules:
+  - name: Automatic merge on approval
+    conditions:
+      - "#approved-reviews-by>=1"
+      - status-success="tests"
+      - status-success="commit-message-validation"
+    actions:
+      merge:
+        method: merge
