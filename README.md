@@ -1,3 +1,5 @@
+# Commit message validator
+
 <!-- PROJECT SHIELDS -->
 
 [![Contributors][contributors-shield]][contributors-url]
@@ -7,6 +9,7 @@
 [![MIT License][license-shield]][license-url]
 
 <!-- PROJECT LOGO -->
+<!-- markdownlint-disable no-inline-html -->
 <br />
 <p align="center">
   <a href="https://github.com/lumapps/commit-message-validator">
@@ -16,16 +19,24 @@
   <h3 align="center">Commit message validator</h3>
 
   <p align="center">
-    Enforce angular commit message convention with minimal dependancy only git and bash.
+    Enforce angular commit message convention with minimal dependancy only
+    git and bash.
     <br />
-    <a href="https://github.com/lumapps/commit-message-validator"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/lumapps/commit-message-validator">
+      <strong>Explore the docs »
+    </strong></a>
     <br />
     <br />
-    <a href="https://github.com/lumapps/commit-message-validator/issues">Report Bug</a>
+    <a href="https://github.com/lumapps/commit-message-validator/issues">
+      Report Bug
+    </a>
     ·
-    <a href="https://github.com/lumapps/commit-message-validator/issues">Request Feature</a>
+    <a href="https://github.com/lumapps/commit-message-validator/issues">
+      Request Feature
+    </a>
   </p>
 </p>
+<!-- markdownlint-enable no-inline-html -->
 
 <!-- TABLE OF CONTENTS -->
 
@@ -47,15 +58,17 @@
 
 ## About The Project
 
-The provided script enforce Angular commit message convention, with an opinionated reduction of allowed types.
-Moreover, it enforces reference to a project management tools named JIRA.
+The provided script enforce Angular commit message convention, with an
+opinionated reduction of allowed types. Moreover, it enforces reference to a
+project management tools named JIRA.
 
 ### Commit Message Format
 
 Each commit message consists of a **header**, a **body** and a **footer**.
-The header has a special format that includes a **type**, a **scope** and a **subject**:
+The header has a special format that includes a **type**, a **scope** andi
+a **subject**:
 
-```
+```Markdown
 <type>(<scope>): <subject>
 <BLANK LINE>
 <body>
@@ -63,11 +76,14 @@ The header has a special format that includes a **type**, a **scope** and a **su
 <footer>
 ```
 
-- The first line of the commit message (the "Subject") cannot be longer than 70 characters.
+- The first line of the commit message (the "Subject") cannot be longer than 70
+  characters.
 - Any other line of the commit message cannot be longer 100 characters!
-- The body and footer are optional, but depends on the type some information can be mandatory.
+- The body and footer are optional, but depends on the type, information can be
+   mandatory.
 
-This allows the message to be easier to read on github as well as in various git tools.
+This allows the message to be easier to read on github as well as in various
+git tools.
 
 ### Type
 
@@ -76,20 +92,24 @@ Must be one of the following:
 - **feat**: A new feature
 - **fix**: A bug fix
 - **docs**: Documentation only changes
-- **lint**: Changes that do not affect the meaning of the code (white-space, formatting, missing semicolons, etc)
+- **lint**: Changes that do not affect the meaning of the code (white-space,
+  formatting, missing semicolons, etc)
 - **refactor**: A code change that neither fixes a bug or adds a feature
 - **test**: Adding missing tests or correcting existing tests
-- **chore**: Changes to the build process or auxiliary tools and libraries such as distribution generation
+- **chore**: Changes to the build process or auxiliary tools and libraries such
+  as distribution generation
 
 ### Scope
 
-The scope could be anything specifying place of the commit change. For example `notification', 'dropdown', etc.
-The scope must be written in [kebab-case](https://en.wikipedia.org/wiki/Letter_case#Special_case_styles).
+The scope could be anything specifying place of the commit change. For example
+`notification', 'dropdown', etc.
+The scope must be written in
+[kebab-case](https://en.wikipedia.org/wiki/Letter_case#Special_case_styles).
 
 ### Subject
 
 A brief but meaningfull description of the change.
-Here are some recommandation for writing your subject:
+Here are recommandations for writing your subject:
 
 - use the imperative, present tense: "change" not "changed" nor "changes"
 - don't capitalize first letter
@@ -97,22 +117,24 @@ Here are some recommandation for writing your subject:
 
 ### Body
 
-The body should include the motivation for the change and contrast this with previous behavior.
+The body should include the motivation for the change and contrast this
+with previous behavior.
 It is optional but highly recommended for any impacting changes.
 
 ### Footer
 
-The footer should contain any information about **Breaking Changes** and is also the place to
-reference JIRA ticket related to this commit.
+The footer should contain any information about **Breaking Changes** and is
+also the place to reference JIRA ticket related to this commit.
 
-The footer is optional but for **feat** and **fix** type the JIRA reference is mandatory.
+The footer is optional but for **feat** and **fix** type the JIRA reference
+is mandatory.
 
-The breaking changes must be at the end of the commit with only "BROKEN:" before the list of breaking changes.
-They must be each on a new line.
+The breaking changes must be at the end of the commit with only "BROKEN:"
+before the list of breaking changes. They must be each on a new line.
 
 ### Commit Example
 
-```
+```Markdown
 feat(toto-service): provide toto for all
 
 Before we had to do another thing. There was this and this problem.
@@ -128,7 +150,7 @@ second thing broken
 
 The proper for revert based on Angular commit message convention should be:
 
-```
+```Markdown
 revert: feat(toto-service): provide toto for all
 
 This reverts commit <sha1>.
@@ -136,15 +158,16 @@ This reverts commit <sha1>.
 
 However, the default git behavior, that cannot be easily overiden is:
 
-```
+```Markdown
 Revert "feat(toto-service): provide toto for all"
 
 This reverts commit <sha1>.
 ```
 
 Thus we won't enforce one or the other, we will only enfore:
-* starting the commit title with revert (with a capitalized letter or not)
-* having the sentence "This reverts commit <sha1>"
+
+- starting the commit title with revert (with a capitalized letter or not)
+- having the sentence "This reverts commit \<sha1\>"
 
 ### Built With
 
@@ -153,31 +176,31 @@ Thus we won't enforce one or the other, we will only enfore:
 
 <!-- GETTING STARTED -->
 
-## Getting Started with command line
+## Getting started with command line
 
-To get a local copy up and running follow these simple steps.
+To get a local copy up and running follow these steps.
 
 ### Prerequisites
 
 1. Install bash
 
-```sh
-sudo apt install bash
-```
+   ```sh
+   sudo apt install bash
+   ```
 
 2. Install bats for development testing
 
-```sh
-sudo apt install bats
-```
+   ```sh
+   sudo apt install bats
+   ```
 
 ### Installation
 
 1. Clone the commit-message-validator
 
-```sh
-git clone https://github.com/lumapps/commit-message-validator.git
-```
+   ```sh
+   git clone https://github.com/lumapps/commit-message-validator.git
+   ```
 
 That's all, your ready to go !
 
@@ -185,7 +208,7 @@ That's all, your ready to go !
 
 ## Usage
 
-Check the commit message referenced by <commit1>:
+Check the commit message referenced by \<commit1\>:
 
 ```sh
 ./check.sh <commit1>
@@ -197,85 +220,98 @@ Check all the commits between 2 references:
 ./check.sh <commit1>..<commit2>
 ```
 
-Behind the hood, the script use `git log` to list all the commit thus any syntax allowed by git will be working.
+Behind the hood, the script use `git log` to list all the commit thus any
+syntax allowed by git will be working.
 
-You can also use the pre-push commit validator, simply copy, `pre-push`, `validator.sh` and `check.sh` files
+You can also use the pre-push commit validator, simply copy, `pre-push`,
+`validator.sh` and `check.sh` files
 in `.git/hooks` directory of your repository.
 
-### OPTIONS
+### Command line Options
 
-- if `COMMIT_VALIDATOR_NO_JIRA` environment variable is not empty, no validation is done on JIRA refs.
-- if `COMMIT_VALIDATOR_ALLOW_TEMP` environment variable is not empty, no validation is done on `fixup!` and `squash!` commits.
+- if `COMMIT_VALIDATOR_NO_JIRA` environment variable is not empty,
+  no validation is done on JIRA refs.
+- if `COMMIT_VALIDATOR_ALLOW_TEMP` environment variable is not empty,
+  no validation is done on `fixup!` and `squash!` commits.
 
 ### Commit template
 
-You might want to use the predefined commit template in order to keep the main information under hand.
+You want to use the predefined commit template to keep the main information
+under hand.
 
-For that, you have to add the following lines in your repository's gitconfig (located at `<project_root>/.gitconfig`).
+For that, you have to add the following lines in your repository's gitconfig
+(located at `<project_root>/.gitconfig`).
+
 ```conf
 [commit]
     template = /path/to/git-commit-template
 ```
 
-## Getting Started with github action
+## Getting started with github action
 
-To enable the action simply create the .github/workflows/commit-message-validator.yml file with the following content:
+To enable the action simply create the
+.github/workflows/commit-message-validator.yml file with the following content:
 
 ```yml
-name: 'Commit message validation on pull request'
+name: "Commit message validation on pull request"
 
-on:
-  pull_request
+on: pull_request
 
 jobs:
   commit-message-validation:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Commit message validation
-      uses: lumapps/commit-message-validator@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit message validation
+        uses: lumapps/commit-message-validator@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-### OPTIONS
+### Github Action option
 
 - if `no_jira` is not empty, no validation is done on JIRA refs.
-- if `allow_temp` is not empty, no validation is done on `fixup!` and `squash!` commits.
+- if `allow_temp` is not empty, no validation is done on `fixup!`
+  and `squash!` commits.
 
 ## Add pre-commit plugin
 
-If you are using [pre-commit](https://pre-commit.com/) in you repository, you can add this to your configuration so commit messages are checked locally:
+If you are using [pre-commit](https://pre-commit.com/) in you repository,
+you can add this to your configuration so commit messages are checked locally:
 
 Into `.pre-commit-config.yaml`:
+
 ```yaml
-...
+
+---
 repos:
-...
+---
 - repo: https://github.com/lumapps/commit-message-validator
   rev: master
   hooks:
     - id: commit-message-validator
       stages: [commit-msg]
       args: [--allow-temp]
-...
 ```
-Then run `pre-commit install --hook-type commit-msg` to install the `commit-message-validator`
 
-### OPTIONS
+Then run `pre-commit install --hook-type commit-msg` to install the
+`commit-message-validator`
+
+### Pre commit hook options
 
 - if `no_jira` is set, no validation is done on JIRA refs.
-- if `allow_temp` is set, no validation is done on `fixup!` and `squash!` commits.
+- if `allow_temp` is set, no validation is done on `fixup!` and `squash!`
+  commits.
 
 <!-- ROADMAP -->
 
 ## Roadmap
 
-See the [open issues](https://github.com/lumapps/commit-message-validator/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/lumapps/commit-message-validator/issues)
+for a list of proposed features (and known issues).
 
 - [x] list all the commit, and run validation on each
 - [x] enforce the overall commit message structure
@@ -297,14 +333,15 @@ See the [open issues](https://github.com/lumapps/commit-message-validator/issues
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open source community such an amazing place to be
+learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Run the tests (`bats -j 100 validator.bats`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+5. Push to the Branch (`git push origin feature/AmazingFeature`)
+6. Open a pull request
 
 <!-- LICENSE -->
 
@@ -322,7 +359,10 @@ Project Link: [https://github.com/lumapps/commit-message-validator](https://gith
 
 ## Acknowledgements
 
-Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+<!-- markdownlint-disable no-inline-html -->
+Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
+from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
+<!-- markdownlint-enable no-inline-html -->
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
