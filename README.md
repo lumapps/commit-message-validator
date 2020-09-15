@@ -253,17 +253,18 @@ If you are using [pre-commit](https://pre-commit.com/) in you repository, you ca
 
 Into `.pre-commit-config.yaml`:
 ```yaml
-...
+default_stages: [commit]
 repos:
-...
-- repo: https://github.com/lumapps/commit-message-validator
+ - repo: https://github.com/lumapps/commit-message-validator
   rev: master
   hooks:
     - id: commit-message-validator
       stages: [commit-msg]
       args: [--allow-temp]
-...
 ```
+
+`default_stages` tells which stage to install hooks that do not specify a `stages` option.
+
 Then run `pre-commit install --hook-type commit-msg` to install the `commit-message-validator`
 
 ### OPTIONS
