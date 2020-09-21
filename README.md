@@ -285,17 +285,18 @@ you can add this to your configuration so commit messages are checked locally:
 Into `.pre-commit-config.yaml`:
 
 ```yaml
-
----
+default_stages: [commit]
 repos:
----
-- repo: https://github.com/lumapps/commit-message-validator
-  rev: master
-  hooks:
-    - id: commit-message-validator
-      stages: [commit-msg]
-      args: [--allow-temp]
+  - repo: https://github.com/lumapps/commit-message-validator
+    rev: master
+    hooks:
+      - id: commit-message-validator
+        stages: [commit-msg]
+        args: [--allow-temp]
 ```
+
+`default_stages` tells which stage to install hooks that do not specify
+a `stages` option.
 
 Then run `pre-commit install --hook-type commit-msg` to install the
 `commit-message-validator`

@@ -31,7 +31,8 @@ then
   exit
 fi
 
-MESSAGE=$(<"$1")
+# removing comment lines from message
+MESSAGE=$(sed '/^#/d' "$1")
 
 FIRST_WORD=${MESSAGE%% *}
 if [[ "${FIRST_WORD,,}" == merge ]]
@@ -44,6 +45,6 @@ fi
 # print message so you don't lose it in case of errors
 # (in case you are not using `-m` option)
 echo "Options: JIRA=$COMMIT_VALIDATOR_NO_JIRA, TEMP=$COMMIT_VALIDATOR_ALLOW_TEMP"
-printf "checking commit message:\n\n#BEGIN#\n%s\n#END#\n\n" "$(grep -v "#" <<< "$MESSAGE")"
+printf "checking commit message:\n\n#BEGIN#\n%s\n#END#\n\n" "$MESSAGE"
 
 validate "$MESSAGE"
