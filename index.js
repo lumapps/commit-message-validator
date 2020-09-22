@@ -131,14 +131,8 @@ async function push_handler() {
 
     console.log(`Validating ${commits.length} commit(s)`);
 
-    await getCommitMessages().then(console.log)
-    return
-
-
-    const from = github.context.payload.before
-    const to = github.context.payload.after
-
-    await chek_commits(from, to);
+    // checks current tree
+    await chek_commits();
 
 
 }
