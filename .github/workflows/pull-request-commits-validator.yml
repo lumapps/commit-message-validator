@@ -1,6 +1,6 @@
-name: 'Commit message validation on pull request'
+name: 'Commit message validation'
 
-on: [ push, pull_request ]
+on: pull_request
 
 jobs:
   commit-message-validation:
@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Commit message validation
-      uses: lumapps/commit-message-validator@master
+        uses: lumapps/commit-message-validator@feat/github_action/push_event
         with:
           no_jira: true
         env:

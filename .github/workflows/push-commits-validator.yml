@@ -1,0 +1,19 @@
+name: 'Commit message validation'
+
+on: push
+
+jobs:
+  commit-message-validation:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Commit message validation
+        uses: lumapps/commit-message-validator@feat/github_action/push_event
+        with:
+          no_jira: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
