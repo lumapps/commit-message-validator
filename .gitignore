@@ -1,1 +1,4 @@
 venv
+# Do not ignore node_modules ! see more at:
+# https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action#commit-tag-and-push-your-action-to-github
+

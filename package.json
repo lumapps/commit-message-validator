@@ -1,0 +1,24 @@
+{
+  "name": "commit-message-validator",
+  "version": "1.0.0",
+  "description": "The provided script enforce Angular commit message convention, with an\nopinionated reduction of allowed types. Moreover, it enforces reference to a\nproject management tools named JIRA.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lumapps/commit-message-validator.git"
+  },
+  "keywords": [],
+  "author": "Sébastien Boulle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lumapps/commit-message-validator/issues"
+  },
+  "homepage": "https://github.com/lumapps/commit-message-validator#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.5",
+    "@actions/github": "^4.0.0"
+  }
+}
