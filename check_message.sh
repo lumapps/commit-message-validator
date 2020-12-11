@@ -10,11 +10,13 @@ OPTIONS=$(getopt --long no-jira allow-temp -- "$@")
 
 COMMIT_VALIDATOR_ALLOW_TEMP=
 COMMIT_VALIDATOR_NO_JIRA=
+COMMIT_VALIDATOR_NO_REVERT_SHA1=
 
 while true; do
   case "$1" in
     --no-jira ) COMMIT_VALIDATOR_NO_JIRA=1; shift ;;
     --allow-temp ) COMMIT_VALIDATOR_ALLOW_TEMP=1; shift ;;
+    --no-revert-sha1 ) COMMIT_VALIDATOR_NO_REVERT_SHA1=1; shift ;;
     -- ) shift; break ;;
     * ) break ;;
   esac
@@ -44,7 +46,10 @@ fi
 
 # print message so you don't lose it in case of errors
 # (in case you are not using `-m` option)
-echo "Options: JIRA=$COMMIT_VALIDATOR_NO_JIRA, TEMP=$COMMIT_VALIDATOR_ALLOW_TEMP"
+echo "Options: "
+echo "  JIRA=$COMMIT_VALIDATOR_NO_JIRA"
+echo "  TEMP=$COMMIT_VALIDATOR_ALLOW_TEMP"
+echo "  NO_REVERT_SHA1=$COMMIT_VALIDATOR_NO_REVERT_SHA1"
 printf "checking commit message:\n\n#BEGIN#\n%s\n#END#\n\n" "$MESSAGE"
 
 validate "$MESSAGE"

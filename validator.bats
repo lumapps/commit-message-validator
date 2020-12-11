@@ -472,6 +472,8 @@ LUM-2345'
 
   run validate_revert "$MESSAGE"
   [[ "$status" -eq $ERROR_REVERT ]]
+  COMMIT_VALIDATOR_NO_REVERT_SHA1= run validate_revert "$MESSAGE"
+  [[ "$status" -eq $ERROR_REVERT ]]
 }
 
 @test "revert body with commit sha1 should be valid" {
@@ -482,6 +484,17 @@ This reverts commit 1234567890.
 LUM-2345'
 
   run validate_revert "$MESSAGE"
+  [[ "$status" -eq 0 ]]
+  COMMIT_VALIDATOR_NO_REVERT_SHA1= run validate_revert "$MESSAGE"
+  [[ "$status" -eq 0 ]]
+}
+
+@test "revert body without sha1 should be valid with the flag" {
+  MESSAGE='rerer
+
+LUM-2345'
+
+  COMMIT_VALIDATOR_NO_REVERT_SHA1=1 run validate_revert "$MESSAGE"
   [[ "$status" -eq 0 ]]
 }
 

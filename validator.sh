@@ -242,6 +242,10 @@ validate_revert() {
   local LINE=""
   local REVERTED_COMMIT=""
 
+  if [[ ! -z "${COMMIT_VALIDATOR_NO_REVERT_SHA1:-}" ]]; then
+    exit 0
+  fi
+
   while IFS= read -r LINE ;
   do
     if [[ $LINE =~ $REVERT_COMMIT_PATTERN ]]; then

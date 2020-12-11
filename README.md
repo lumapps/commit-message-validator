@@ -233,6 +233,8 @@ in `.git/hooks` directory of your repository.
   no validation is done on JIRA refs.
 - if `COMMIT_VALIDATOR_ALLOW_TEMP` environment variable is not empty,
   no validation is done on `fixup!` and `squash!` commits.
+- if `COMMIT_VALIDATOR_NO_REVERT_SHA1` environment variable is not empty,
+  no validation is done revert commits.
 
 ### Commit template
 
@@ -276,6 +278,8 @@ jobs:
 - if `no_jira` is not empty, no validation is done on JIRA refs.
 - if `allow_temp` is not empty, no validation is done on `fixup!`
   and `squash!` commits.
+- if `no_revert_sha1` is not empty, no validation is done on revert
+  commits.
 
 ## Add pre-commit plugin
 
@@ -303,9 +307,10 @@ Then run `pre-commit install --hook-type commit-msg` to install the
 
 ### Pre commit hook options
 
-- if `no_jira` is set, no validation is done on JIRA refs.
-- if `allow_temp` is set, no validation is done on `fixup!` and `squash!`
+- if `no-jira` is set, no validation is done on JIRA refs.
+- if `allow-temp` is set, no validation is done on `fixup!` and `squash!`
   commits.
+- if `no-revert-sha1` is set, no validation is done on revert commits.
 
 <!-- ROADMAP -->
 
