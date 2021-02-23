@@ -8,7 +8,8 @@ readonly HEADER_PATTERN="^([^\(]+)\(([^\)]+)\): (.+)$"
 readonly TYPE_PATTERN="^(feat|fix|docs|gen|lint|refactor|test|chore)$"
 readonly SCOPE_PATTERN="^([a-z][a-z0-9]*)(-[a-z0-9]+)*$"
 readonly SUBJECT_PATTERN="^([a-z0-9].*[^ ^\.])$"
-readonly JIRA_PATTERN="^([A-Z]{2,4}-[0-9]{1,6} ?)+$"
+readonly JIRA_PATTERN="^([A-Z]{3,4}-[0-9]{1,6} ?)+$"
+readonly JIRA_HEADER_PATTERN="^.*([A-Z]{3,4}-[0-9]{1,6}).*$"
 readonly BROKE_PATTERN="^BROKEN:$"
 readonly TRAILING_SPACE_PATTERN=" +$"
 readonly REVERT_HEADER_PATTERN="^[R|r]evert[: ].*$"
@@ -29,9 +30,12 @@ readonly ERROR_REVERT=10
 GLOBAL_HEADER=""
 GLOBAL_BODY=""
 GLOBAL_JIRA=""
+GLOBAL_FOOTER=""
+
+# Overridable variables
 GLOBAL_JIRA_TYPES="${GLOBAL_JIRA_TYPES:-feat fix}"
 GLOBAL_MAX_LENGTH="${GLOBAL_MAX_LENGTH:-70}"
-GLOBAL_FOOTER=""
+GLOBAL_JIRA_IN_HEADER="${GLOBAL_JIRA_IN_HEADER:-}"
 
 GLOBAL_TYPE=""
 GLOBAL_SCOPE=""
@@ -54,6 +58,9 @@ validate_overall_structure() {
     if [[ $STATE -eq $WAITING_HEADER ]]; then
       GLOBAL_HEADER="$LINE"
       STATE="$WAITING_EMPTY"
+      if [[ -n "${GLOBAL_JIRA_IN_HEADER:-}" ]] && [[ $LINE =~ $JIRA_HEADER_PATTERN ]]; then
+        GLOBAL_JIRA=${BASH_REMATCH[1]}
+      fi
 
     elif [[ $STATE -eq $WAITING_EMPTY ]]; then
       if [[ $LINE != "" ]]; then

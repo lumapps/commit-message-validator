@@ -97,6 +97,18 @@ ABC-1234"
   [[ $GLOBAL_FOOTER == "" ]]
 }
 
+@test "structure: valid commit message with JIRA in header" {
+  COMMIT="feat(abc): ABC-1234
+
+plop"
+
+  GLOBAL_JIRA_IN_HEADER="allow" validate_overall_structure "$COMMIT"
+  [[ $GLOBAL_HEADER == "feat(abc): ABC-1234" ]]
+  [[ $GLOBAL_JIRA == "ABC-1234" ]]
+  [[ $GLOBAL_BODY == "plop"$'\n' ]]
+  [[ $GLOBAL_FOOTER == "" ]]
+}
+
 @test "structure: valid commit message with header and multiple JIRA" {
   COMMIT="plop plop
 
