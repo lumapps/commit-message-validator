@@ -5,7 +5,7 @@ if [[ -v ZSH_NAME ]]; then
 fi
 
 readonly HEADER_PATTERN="^([^\(]+)\(([^\)]+)\): (.+)$"
-readonly TYPE_PATTERN="^(feat|fix|docs|lint|refactor|test|chore)$"
+readonly TYPE_PATTERN="^(feat|fix|docs|gen|lint|refactor|test|chore)$"
 readonly SCOPE_PATTERN="^([a-z][a-z0-9]*)(-[a-z0-9]+)*$"
 readonly SUBJECT_PATTERN="^([a-z0-9].*[^ ^\.])$"
 readonly JIRA_PATTERN="^([A-Z]{2,4}-[0-9]{1,6} ?)+$"
