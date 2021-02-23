@@ -328,6 +328,10 @@ BROKEN:
   [ "$status" -eq $ERROR_HEADER_LENGTH ]
 }
 
+@test "header length cannot be more than 150 with spaces. overriden" {
+  GLOBAL_MAX_LENGTH=150 validate_header_length "012345678 012345678 012345678 012345678 012345678 012345678 012345678 1"
+}
+
 @test "header length can be 70" {
   run validate_header_length "0123456789012345678901234567890123456789012345678901234567890123456789"
   [ "$status" -eq 0 ]

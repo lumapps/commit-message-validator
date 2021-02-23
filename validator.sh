@@ -30,6 +30,7 @@ GLOBAL_HEADER=""
 GLOBAL_BODY=""
 GLOBAL_JIRA=""
 GLOBAL_JIRA_TYPES="${GLOBAL_JIRA_TYPES:-feat fix}"
+GLOBAL_MAX_LENGTH="${GLOBAL_MAX_LENGTH:-70}"
 GLOBAL_FOOTER=""
 
 GLOBAL_TYPE=""
@@ -142,12 +143,8 @@ validate_header() {
 
 validate_header_length() {
   local HEADER="$1"
-  local LENGTH
-
-  LENGTH="$(echo -n "$HEADER" | wc -c)"
-
-  if [[ $LENGTH -gt 70 ]]; then
-      echo -e "commit header length is more than 70 charaters"
+  if [[ ${#HEADER} -gt ${GLOBAL_MAX_LENGTH} ]]; then
+      echo -e "commit header length is more than ${GLOBAL_MAX_LENGTH} characters"
       exit $ERROR_HEADER_LENGTH
   fi
 }
