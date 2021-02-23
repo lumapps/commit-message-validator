@@ -499,23 +499,23 @@ LUM-2345'
 }
 
 @test "features and fixes commits need jira reference" {
-  [[ `need_jira "feat"` -eq 1 ]]
-  [[ `need_jira "fix"` -eq 1 ]]
+  need_jira "feat"
+  need_jira "fix"
 }
 
 @test "features and fixes commits need jira reference if env empty" {
-  [[ `COMMIT_VALIDATOR_NO_JIRA= need_jira "feat"` -eq 1 ]]
-  [[ `COMMIT_VALIDATOR_NO_JIRA= need_jira "fix"` -eq 1 ]]
+  COMMIT_VALIDATOR_NO_JIRA= need_jira "feat"
+  COMMIT_VALIDATOR_NO_JIRA= need_jira "fix"
 }
 
 @test "features and fixes commits don't need jira reference if env non empty" {
-  [[ `COMMIT_VALIDATOR_NO_JIRA=1 need_jira "feat"` -eq 0 ]]
-  [[ `COMMIT_VALIDATOR_NO_JIRA=1 need_jira "fix"` -eq 0 ]]
+  ! COMMIT_VALIDATOR_NO_JIRA=1 need_jira "feat"
+  ! COMMIT_VALIDATOR_NO_JIRA=1 need_jira "fix"
 }
 
 @test "other commits don't need jira reference" {
-  [[ `need_jira "docs"` -eq 0 ]]
-  [[ `need_jira "test"` -eq 0 ]]
+  ! need_jira "docs"
+  ! need_jira "test"
 }
 
 @test "feat without jira ref should be rejected" {
