@@ -97,6 +97,18 @@ ABC-1234"
   [[ $GLOBAL_FOOTER == "" ]]
 }
 
+@test "structure: valid commit message with JIRA in header" {
+  COMMIT="feat(abc): ABC-1234
+
+plop"
+
+  GLOBAL_JIRA_IN_HEADER="allow" validate_overall_structure "$COMMIT"
+  [[ $GLOBAL_HEADER == "feat(abc): ABC-1234" ]]
+  [[ $GLOBAL_JIRA == "ABC-1234" ]]
+  [[ $GLOBAL_BODY == "plop"$'\n' ]]
+  [[ $GLOBAL_FOOTER == "" ]]
+}
+
 @test "structure: valid commit message with header and multiple JIRA" {
   COMMIT="plop plop
 
@@ -328,6 +340,10 @@ BROKEN:
   [ "$status" -eq $ERROR_HEADER_LENGTH ]
 }
 
+@test "header length cannot be more than 150 with spaces. overriden" {
+  GLOBAL_MAX_LENGTH=150 validate_header_length "012345678 012345678 012345678 012345678 012345678 012345678 012345678 1"
+}
+
 @test "header length can be 70" {
   run validate_header_length "0123456789012345678901234567890123456789012345678901234567890123456789"
   [ "$status" -eq 0 ]
@@ -499,23 +515,23 @@ LUM-2345'
 }
 
 @test "features and fixes commits need jira reference" {
-  [[ `need_jira "feat"` -eq 1 ]]
-  [[ `need_jira "fix"` -eq 1 ]]
+  need_jira "feat"
+  need_jira "fix"
 }
 
 @test "features and fixes commits need jira reference if env empty" {
-  [[ `COMMIT_VALIDATOR_NO_JIRA= need_jira "feat"` -eq 1 ]]
-  [[ `COMMIT_VALIDATOR_NO_JIRA= need_jira "fix"` -eq 1 ]]
+  COMMIT_VALIDATOR_NO_JIRA= need_jira "feat"
+  COMMIT_VALIDATOR_NO_JIRA= need_jira "fix"
 }
 
 @test "features and fixes commits don't need jira reference if env non empty" {
-  [[ `COMMIT_VALIDATOR_NO_JIRA=1 need_jira "feat"` -eq 0 ]]
-  [[ `COMMIT_VALIDATOR_NO_JIRA=1 need_jira "fix"` -eq 0 ]]
+  ! COMMIT_VALIDATOR_NO_JIRA=1 need_jira "feat"
+  ! COMMIT_VALIDATOR_NO_JIRA=1 need_jira "fix"
 }
 
 @test "other commits don't need jira reference" {
-  [[ `need_jira "docs"` -eq 0 ]]
-  [[ `need_jira "test"` -eq 0 ]]
+  ! need_jira "docs"
+  ! need_jira "test"
 }
 
 @test "feat without jira ref should be rejected" {

@@ -2,21 +2,19 @@
 
 set -eu
 
-OPTIONS=$(getopt --long no-jira allow-temp -- "$@")
-[ $? -eq 0 ] || {
-    echo "Incorrect options provided"
-    exit 1
-}
+OPTIONS=$(getopt --long no-jira,allow-temp,jira-in-header,header-length:,jira-types: -- "$@")
 
-COMMIT_VALIDATOR_ALLOW_TEMP=
-COMMIT_VALIDATOR_NO_JIRA=
-COMMIT_VALIDATOR_NO_REVERT_SHA1=
+unset COMMIT_VALIDATOR_ALLOW_TEMP COMMIT_VALIDATOR_NO_JIRA COMMIT_VALIDATOR_NO_REVERT_SHA1 GLOBAL_JIRA_IN_HEADER GLOBAL_MAX_LENGTH GLOBAL_JIRA_TYPES
 
+eval set -- $OPTIONS
 while true; do
   case "$1" in
     --no-jira ) COMMIT_VALIDATOR_NO_JIRA=1; shift ;;
     --allow-temp ) COMMIT_VALIDATOR_ALLOW_TEMP=1; shift ;;
     --no-revert-sha1 ) COMMIT_VALIDATOR_NO_REVERT_SHA1=1; shift ;;
+    --jira-in-header ) GLOBAL_JIRA_IN_HEADER=1; shift ;;
+    --header-length ) GLOBAL_MAX_LENGTH="$2"; shift 2 ;;
+    --jira-types ) GLOBAL_JIRA_TYPES="$2"; shift 2 ;;
     -- ) shift; break ;;
     * ) break ;;
   esac
@@ -47,9 +45,9 @@ fi
 # print message so you don't lose it in case of errors
 # (in case you are not using `-m` option)
 echo "Options: "
-echo "  JIRA=$COMMIT_VALIDATOR_NO_JIRA"
-echo "  TEMP=$COMMIT_VALIDATOR_ALLOW_TEMP"
-echo "  NO_REVERT_SHA1=$COMMIT_VALIDATOR_NO_REVERT_SHA1"
+echo "  JIRA=${COMMIT_VALIDATOR_NO_JIRA:-}"
+echo "  TEMP=${COMMIT_VALIDATOR_ALLOW_TEMP:-}"
+echo "  NO_REVERT_SHA1=${COMMIT_VALIDATOR_NO_REVERT_SHA1:-}"
 printf "checking commit message:\n\n#BEGIN#\n%s\n#END#\n\n" "$MESSAGE"
 
 validate "$MESSAGE"

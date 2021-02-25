@@ -5,10 +5,11 @@ if [[ -v ZSH_NAME ]]; then
 fi
 
 readonly HEADER_PATTERN="^([^\(]+)\(([^\)]+)\): (.+)$"
-readonly TYPE_PATTERN="^(feat|fix|docs|lint|refactor|test|chore)$"
+readonly TYPE_PATTERN="^(feat|fix|docs|gen|lint|refactor|test|chore)$"
 readonly SCOPE_PATTERN="^([a-z][a-z0-9]*)(-[a-z0-9]+)*$"
 readonly SUBJECT_PATTERN="^([a-z0-9].*[^ ^\.])$"
-readonly JIRA_PATTERN="^([A-Z]{2,4}-[0-9]{1,6} ?)+$"
+readonly JIRA_PATTERN="^([A-Z]{3,4}-[0-9]{1,6} ?)+$"
+readonly JIRA_HEADER_PATTERN="^.*([A-Z]{3,4}-[0-9]{1,6}).*$"
 readonly BROKE_PATTERN="^BROKEN:$"
 readonly TRAILING_SPACE_PATTERN=" +$"
 readonly REVERT_HEADER_PATTERN="^[R|r]evert[: ].*$"
@@ -31,6 +32,11 @@ GLOBAL_BODY=""
 GLOBAL_JIRA=""
 GLOBAL_FOOTER=""
 
+# Overridable variables
+GLOBAL_JIRA_TYPES="${GLOBAL_JIRA_TYPES:-feat fix}"
+GLOBAL_MAX_LENGTH="${GLOBAL_MAX_LENGTH:-70}"
+GLOBAL_JIRA_IN_HEADER="${GLOBAL_JIRA_IN_HEADER:-}"
+
 GLOBAL_TYPE=""
 GLOBAL_SCOPE=""
 GLOBAL_SUBJECT=""
@@ -52,6 +58,9 @@ validate_overall_structure() {
     if [[ $STATE -eq $WAITING_HEADER ]]; then
       GLOBAL_HEADER="$LINE"
       STATE="$WAITING_EMPTY"
+      if [[ -n "${GLOBAL_JIRA_IN_HEADER:-}" ]] && [[ $LINE =~ $JIRA_HEADER_PATTERN ]]; then
+        GLOBAL_JIRA=${BASH_REMATCH[1]}
+      fi
 
     elif [[ $STATE -eq $WAITING_EMPTY ]]; then
       if [[ $LINE != "" ]]; then
@@ -141,12 +150,8 @@ validate_header() {
 
 validate_header_length() {
   local HEADER="$1"
-  local LENGTH
-
-  LENGTH="$(echo -n "$HEADER" | wc -c)"
-
-  if [[ $LENGTH -gt 70 ]]; then
-      echo -e "commit header length is more than 70 charaters"
+  if [[ ${#HEADER} -gt ${GLOBAL_MAX_LENGTH} ]]; then
+      echo -e "commit header length is more than ${GLOBAL_MAX_LENGTH} characters"
       exit $ERROR_HEADER_LENGTH
   fi
 }
@@ -212,18 +217,14 @@ need_jira() {
   local TYPE=$1
 
   if [[ ! -z "${COMMIT_VALIDATOR_NO_JIRA:-}" ]]; then
-    echo 0
+    return 1
   else
-    case $TYPE in
-      feat)
-        echo 1
-        ;;
-      fix)
-        echo 1
-        ;;
-      *)
-        echo 0
-    esac
+    for type in ${GLOBAL_JIRA_TYPES}; do
+        if [[ "${TYPE}" == "${type}" ]]; then
+            return 0
+        fi
+    done
+    return 1
   fi
 }
 
@@ -231,7 +232,9 @@ validate_jira() {
   local TYPE=$1
   local JIRA=$2
 
-  if [[ "$(need_jira "$TYPE")" -eq "1" && -z "${JIRA:-}" ]]; then
+
+
+  if need_jira "$TYPE" && [[ -z "${JIRA:-}" ]]; then
      echo -e "commits with type '${TYPE}' need to include a reference to a JIRA ticket, by adding the project prefix and the issue number to the commit message, this could be done easily with: git commit -m 'feat(widget): add a wonderful widget' -m LUM-1234"
      exit $ERROR_JIRA
   fi
