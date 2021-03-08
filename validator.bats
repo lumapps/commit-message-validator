@@ -112,12 +112,12 @@ plop"
 @test "structure: valid commit message with header and multiple JIRA" {
   COMMIT="plop plop
 
-ABC-1234 DEF-1234"
+ABC-1234 DE-1234"
 
   validate_overall_structure "$COMMIT"
   [[ $GLOBAL_HEADER == "plop plop" ]]
   [[ $GLOBAL_BODY == "" ]]
-  [[ $GLOBAL_JIRA == "ABC-1234 DEF-1234" ]]
+  [[ $GLOBAL_JIRA == "ABC-1234 DE-1234" ]]
   [[ $GLOBAL_FOOTER == "" ]]
 }
 
@@ -546,6 +546,11 @@ LUM-2345'
 
 @test "feat with jira ref should be validated" {
   run validate_jira "feat" "ABC-123"
+  [[ "$status" -eq 0 ]]
+}
+
+@test "feat with short jira ref should be validated" {
+  run validate_jira "feat" "AB-123"
   [[ "$status" -eq 0 ]]
 }
 

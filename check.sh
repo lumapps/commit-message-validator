@@ -20,4 +20,4 @@ do
    validate "$MESSAGE"
 done <<< $COMMITS
 
-echo "All commits succesfully checked"
+echo "All commits successfully checked"
