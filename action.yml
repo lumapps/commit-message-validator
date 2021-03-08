@@ -16,6 +16,15 @@ inputs:
   no_revert_sha1:
     description: 'If not empty, reverted sha1 commit is not mandatory in revert commit message.'
     required: false
+  header_length:
+    description: 'If not empty, max header_length'
+    required: false
+  jira_types:
+    description: 'If not empty, space separated list of types that require Jira refs'
+    required: false
+  jira_in_header:
+    description: 'If not empty, allow for jira ref in header'
+    required: false
 runs:
   using: "composite"
   steps:
@@ -35,4 +44,7 @@ runs:
         COMMIT_VALIDATOR_NO_JIRA: ${{ inputs.no_jira }}
         COMMIT_VALIDATOR_ALLOW_TEMP: ${{ inputs.allow_temp }}
         COMMIT_VALIDATOR_NO_REVERT_SHA1: ${{ inputs.no_revert_sha1 }}
+        GLOBAL_JIRA_TYPES: ${{ inputs.jira_types }}
+        GLOBAL_MAX_LENGTH: ${{ inputs.header_length }}
+        GLOBAL_JIRA_IN_HEADER: ${{ inputs.jira_in_header }}
       shell: bash
