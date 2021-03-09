@@ -11,7 +11,7 @@ pre-commit=./venv/bin/pre-commit
 .PHONY: lint venv
 
 venv:
-	python3.7 -m venv venv
+	python3 -m venv venv
 	$(pip) install pre-commit
 	$(pre-commit) install -t commit-msg
 
