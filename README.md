@@ -280,6 +280,9 @@ jobs:
   and `squash!` commits.
 - if `no_revert_sha1` is not empty, no validation is done on revert
   commits.
+- `jira_in_header` jira reference can be put in the commit header.
+- `header_length` allow to override the max length of the header line.
+- `jira_types` takes a space separated list `"feat fix"` as a parameter to override the default types requiring a jira
 
 ## Add pre-commit plugin
 
