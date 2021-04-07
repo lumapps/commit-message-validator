@@ -6,6 +6,7 @@ OPTIONS=$(getopt --long no-jira,allow-temp,jira-in-header,header-length:,jira-ty
 
 unset COMMIT_VALIDATOR_ALLOW_TEMP COMMIT_VALIDATOR_NO_JIRA COMMIT_VALIDATOR_NO_REVERT_SHA1 GLOBAL_JIRA_IN_HEADER GLOBAL_MAX_LENGTH GLOBAL_JIRA_TYPES
 
+# this edits the currents args
 eval set -- $OPTIONS
 while true; do
   case "$1" in
@@ -24,15 +25,16 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 # shellcheck source=validator.sh
 source "$DIR/validator.sh"
 
-
-if [[ "$1" == *MERGE_MSG ]]
+# usually this is the first arg, now it's forth. See OPTIONS
+MESSAGE_FILE=$4
+if [[ "$MESSAGE_FILE" == *MERGE_MSG ]]
 then
   # ignore merge message (merge with --no-ff without conflict)
   exit
 fi
 
 # removing comment lines from message
-MESSAGE=$(sed '/^#/d' "$1")
+MESSAGE=$(sed '/^#/d' "$MESSAGE_FILE")
 
 FIRST_WORD=${MESSAGE%% *}
 if [[ "${FIRST_WORD,,}" == merge ]]
