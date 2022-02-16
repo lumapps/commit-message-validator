@@ -76,8 +76,9 @@ a **subject**:
 <footer>
 ```
 
-- The first line of the commit message (the "Subject") cannot be longer than 70
-  characters.
+- The first line of the commit message (the "Subject") should not be longer
+  than 70 characters. However the limit is set to 100 characters to allow to
+  exceed the 70 characters when it's really needed.
 - Any other line of the commit message cannot be longer 100 characters!
 - The body and footer are optional, but depends on the type, information can be
    mandatory.
