@@ -128,7 +128,8 @@ The footer should contain any information about **Breaking Changes** and is
 also the place to reference JIRA ticket related to this commit.
 
 The footer is optional but for **feat** and **fix** type the JIRA reference
-is mandatory.
+is mandatory. It can however explicitly be shut down by using `NOJIRA` as a
+JIRA reference.
 
 The breaking changes must be at the end of the commit with only "BROKEN:"
 before the list of breaking changes. They must be each on a new line.

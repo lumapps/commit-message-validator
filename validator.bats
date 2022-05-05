@@ -85,6 +85,18 @@ plop
   [[ $GLOBAL_FOOTER == "" ]]
 }
 
+@test "structure: valid commit message with header and no JIRA" {
+  COMMIT="plop plop
+
+NOJIRA"
+
+  validate_overall_structure "$COMMIT"
+  [[ $GLOBAL_HEADER == "plop plop" ]]
+  [[ $GLOBAL_BODY == "" ]]
+  [[ $GLOBAL_JIRA == "NOJIRA" ]]
+  [[ $GLOBAL_FOOTER == "" ]]
+}
+
 @test "structure: valid commit message with header and JIRA" {
   COMMIT="plop plop
 
