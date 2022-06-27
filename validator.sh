@@ -64,55 +64,55 @@ validate_overall_structure() {
 
     elif [[ $STATE -eq $WAITING_EMPTY ]]; then
       if [[ $LINE != "" ]]; then
-	echo -e "missing empty line in commit message between header and body or body and footer"
+        echo -e "missing empty line in commit message between header and body or body and footer"
         exit $ERROR_STRUCTURE
       fi
       STATE="$START_TEXT"
 
     elif [[ $STATE -eq $START_TEXT ]]; then
       if [[ $LINE = "" ]]; then
-	echo -e "double empty line is not allowed"
+        echo -e "double empty line is not allowed"
         exit $ERROR_STRUCTURE
       fi
 
       if [[ $LINE =~ $BROKE_PATTERN ]]; then
-	STATE="$READING_FOOTER"
+        STATE="$READING_FOOTER"
       elif [[ $LINE =~ $JIRA_PATTERN ]]; then
-	STATE="$READING_BROKEN"
-	GLOBAL_JIRA=${BASH_REMATCH[0]}
+        STATE="$READING_BROKEN"
+        GLOBAL_JIRA=${BASH_REMATCH[0]}
       else
-	STATE="$READING_BODY"
-	GLOBAL_BODY=$GLOBAL_BODY$LINE$'\n'
+        STATE="$READING_BODY"
+        GLOBAL_BODY=$GLOBAL_BODY$LINE$'\n'
       fi
 
     elif [[ $STATE -eq $READING_BODY ]]; then
       if [[ $LINE =~ $BROKE_PATTERN ]]; then
-	echo -e "missing empty line before broke part"
+        echo -e "missing empty line before broke part"
         exit $ERROR_STRUCTURE
       fi
 
       if [[ $LINE =~ $JIRA_PATTERN ]]; then
-	echo -e "missing empty line before JIRA reference"
+        echo -e "missing empty line before JIRA reference"
         exit $ERROR_STRUCTURE
       fi
 
       if [[ $LINE = "" ]]; then
-	STATE=$START_TEXT
+        STATE=$START_TEXT
       else
-	GLOBAL_BODY=$GLOBAL_BODY$LINE$'\n'
+        GLOBAL_BODY=$GLOBAL_BODY$LINE$'\n'
       fi
 
     elif [[ $STATE -eq $READING_BROKEN ]]; then
       if [[ $LINE =~ $BROKE_PATTERN ]]; then
-	STATE="$READING_FOOTER"
+        STATE="$READING_FOOTER"
       else
-	echo -e "only broken part could be after the JIRA reference"
+        echo -e "only broken part could be after the JIRA reference"
         exit $ERROR_STRUCTURE
       fi
 
     elif [[ $STATE -eq $READING_FOOTER ]]; then
       if [[ $LINE = "" ]]; then
-	echo -e "no empty line allowed in broken part"
+        echo -e "no empty line allowed in broken part"
         exit $ERROR_STRUCTURE
       fi
 
@@ -252,7 +252,7 @@ validate_revert() {
   while IFS= read -r LINE ;
   do
     if [[ $LINE =~ $REVERT_COMMIT_PATTERN ]]; then
-	REVERTED_COMMIT=${BASH_REMATCH[1]}
+      REVERTED_COMMIT=${BASH_REMATCH[1]}
     fi
   done <<< "$BODY"
 
