@@ -189,6 +189,9 @@ validate_body_length() {
 
   while IFS= read -r LINE ;
   do
+    # Skip lines with no spaces as they can't be split
+    $(echo -n "$LINE" | grep -q "\s") || continue
+
     local LENGTH
 
     LENGTH="$(echo -n "$LINE" | wc -c)"
