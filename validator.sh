@@ -4,7 +4,8 @@ if [[ -v ZSH_NAME ]]; then
   setopt KSH_ARRAYS
 fi
 
-readonly HEADER_PATTERN="^([^\(]+)\(([^\)]+)\): (.+)$"
+readonly HEADER_PATTERN="^([^\(]+)\(([^\)]+)\)!??: (.+)$"
+readonly HEADER_BROKEN_PATTERN="^([^\(]+)\(([^\)]+)\)!: (.+)$"
 readonly TYPE_PATTERN="^(feat|fix|docs|gen|lint|refactor|test|chore)$"
 readonly SCOPE_PATTERN="^([a-z][a-z0-9]*)(-[a-z0-9]+)*$"
 readonly SUBJECT_PATTERN="^([a-z0-9].*[^ ^\.])$"
@@ -26,6 +27,7 @@ readonly ERROR_BODY_LENGTH=7
 readonly ERROR_TRAILING_SPACE=8
 readonly ERROR_JIRA=9
 readonly ERROR_REVERT=10
+readonly ERROR_BROKEN=11
 
 GLOBAL_HEADER=""
 GLOBAL_BODY=""
@@ -243,6 +245,16 @@ validate_jira() {
   fi
 }
 
+validate_broken() {
+  local HEADER="$1"
+  local FOOTER="$2"
+
+  if [[ $HEADER =~ $HEADER_BROKEN_PATTERN && ! $FOOTER =~ $BROKE_PATTERN ]];then
+    echo -e "When using type(scope)!: subject,  you must also provide BROKEN: in the footer"
+    exit $ERROR_BROKEN
+  fi
+}
+
 validate_revert() {
   local BODY=$1
   local LINE=""
@@ -299,5 +311,6 @@ validate() {
      validate_trailing_space "$FOOTER"
 
      validate_jira "$TYPE" "$JIRA"
+     validate_broken "$HEADER" "$FOOTER"
    fi
 }
