@@ -1,8 +1,8 @@
 ---
-name: 'Commit message validator'
+name: 'Commit message validator '
 description: >
-  Enforce angular commit message convention with minimal dependency only git and bash.
-author: 'Sébastien Boulle'
+  Enforce angular commit message convention with minimal dependency only git and bash. Forks from Sébastien Boulle
+author: 'David Murphy'
 branding:
   icon: 'check-square'
   color: 'green'

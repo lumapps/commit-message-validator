@@ -1,4 +1,4 @@
-# Commit message validator
+# Commit message validator (reduex) 
 
 <!-- PROJECT SHIELDS -->
 
@@ -12,7 +12,7 @@
 <!-- markdownlint-disable no-inline-html -->
 <br />
 <p align="center">
-  <a href="https://github.com/lumapps/commit-message-validator">
+  <a href="https://github.com/dbmurphy/commit-message-validator">
     <img src="images/stamp.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -22,16 +22,16 @@
     Enforce angular commit message convention with minimal dependancy only
     git and bash.
     <br />
-    <a href="https://github.com/lumapps/commit-message-validator">
+    <a href="https://github.com/dbmurphy/commit-message-validator">
       <strong>Explore the docs »
     </strong></a>
     <br />
     <br />
-    <a href="https://github.com/lumapps/commit-message-validator/issues">
+    <a href="https://github.com/dbmurphy/commit-message-validator/issues">
       Report Bug
     </a>
     ·
-    <a href="https://github.com/lumapps/commit-message-validator/issues">
+    <a href="https://github.com/dbmurphy/commit-message-validator/issues">
       Request Feature
     </a>
   </p>
@@ -69,7 +69,7 @@ The header has a special format that includes a **type**, a **scope** andi
 a **subject**:
 
 ```Markdown
-<type>(<scope>): <subject>
+<type>(<scope>)[!]: <subject>
 <BLANK LINE>
 <body>
 <BLANK LINE>
@@ -200,7 +200,7 @@ To get a local copy up and running follow these steps.
 1. Clone the commit-message-validator
 
    ```sh
-   git clone https://github.com/lumapps/commit-message-validator.git
+   git clone https://github.com/dbmurphy/commit-message-validator.git
    ```
 
 That's all, your ready to go !
@@ -295,7 +295,7 @@ Into `.pre-commit-config.yaml`:
 ```yaml
 default_stages: [commit]
 repos:
-  - repo: https://github.com/lumapps/commit-message-validator
+  - repo: https://github.com/dbmurphy/commit-message-validator
     rev: master
     hooks:
       - id: commit-message-validator
@@ -323,7 +323,7 @@ Then run `pre-commit install --hook-type commit-msg` to install the
 
 ## Roadmap
 
-See the [open issues](https://github.com/lumapps/commit-message-validator/issues)
+See the [open issues](https://github.com/dbmurphy/commit-message-validator/issues)
 for a list of proposed features (and known issues).
 
 - [x] list all the commit, and run validation on each
@@ -366,12 +366,13 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Project Link: [https://github.com/lumapps/commit-message-validator](https://github.com/lumapps/commit-message-validator)
+Project Link: [https://github.com/dbmurphy/commit-message-validator](https://github.com/dbmurphy/commit-message-validator)
 
 <!-- ACKNOWLEDGEMENTS -->
 
 ## Acknowledgements
 
+Based on [lumaapps commit-message-validator](https://github.com/lumapps/commit-message-validator) that has gone stale
 <!-- markdownlint-disable no-inline-html -->
 Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a>
 from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
@@ -380,13 +381,13 @@ from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/lumapps/commit-message-validator.svg?style=flat-square
-[contributors-url]: https://github.com/lumapps/commit-message-validator/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/lumapps/commit-message-validator.svg?style=flat-square
-[forks-url]: https://github.com/lumapps/commit-message-validator/network/members
-[stars-shield]: https://img.shields.io/github/stars/lumapps/commit-message-validator.svg?style=flat-square
-[stars-url]: https://github.com/lumapps/commit-message-validator/stargazers
-[issues-shield]: https://img.shields.io/github/issues/lumapps/commit-message-validator.svg?style=flat-square
-[issues-url]: https://github.com/lumapps/commit-message-validator/issues
-[license-shield]: https://img.shields.io/github/license/lumapps/commit-message-validator.svg?style=flat-square
-[license-url]: https://github.com/lumapps/commit-message-validator/blob/master/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/dbmurphy/commit-message-validator.svg?style=flat-square
+[contributors-url]: https://github.com/dbmurphy/commit-message-validator/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/dbmurphy/commit-message-validator.svg?style=flat-square
+[forks-url]: https://github.com/dbmurphy/commit-message-validator/network/members
+[stars-shield]: https://img.shields.io/github/stars/dbmurphy/commit-message-validator.svg?style=flat-square
+[stars-url]: https://github.com/dbmurphy/commit-message-validator/stargazers
+[issues-shield]: https://img.shields.io/github/issues/dbmurphy/commit-message-validator.svg?style=flat-square
+[issues-url]: https://github.com/dbmurphy/commit-message-validator/issues
+[license-shield]: https://img.shields.io/github/license/dbmurphy/commit-message-validator.svg?style=flat-square
+[license-url]: https://github.com/dbmurphy/commit-message-validator/blob/master/LICENSE
