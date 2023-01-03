@@ -8,8 +8,9 @@ readonly HEADER_PATTERN="^([^\(]+)\(([^\)]+)\): (.+)$"
 readonly TYPE_PATTERN="^(feat|fix|docs|gen|lint|refactor|test|chore)$"
 readonly SCOPE_PATTERN="^([a-z][a-z0-9]*)(-[a-z0-9]+)*$"
 readonly SUBJECT_PATTERN="^([a-z0-9].*[^ ^\.])$"
-readonly JIRA_PATTERN="^([A-Z]{2,6}[0-9]{0,6}-[0-9]{1,6} ?)+$"
-readonly JIRA_HEADER_PATTERN="^.*([A-Z]{3,4}-[0-9]{1,6}).*$"
+readonly JIRA_PATTERN="[A-Z]{2,6}[0-9]{0,6}-[0-9]{1,6}"
+readonly JIRA_FOOTER_PATTERN="^(${JIRA_PATTERN} ?)+$"
+readonly JIRA_HEADER_PATTERN="^.*[^A-Z](${JIRA_PATTERN}).*$"
 readonly BROKE_PATTERN="^BROKEN:$"
 readonly TRAILING_SPACE_PATTERN=" +$"
 readonly REVERT_HEADER_PATTERN="^[R|r]evert[: ].*$"
@@ -77,7 +78,7 @@ validate_overall_structure() {
 
       if [[ $LINE =~ $BROKE_PATTERN ]]; then
         STATE="$READING_FOOTER"
-      elif [[ $LINE =~ $JIRA_PATTERN ]]; then
+      elif [[ $LINE =~ $JIRA_FOOTER_PATTERN ]]; then
         STATE="$READING_BROKEN"
         GLOBAL_JIRA=${BASH_REMATCH[0]}
       else
@@ -91,7 +92,7 @@ validate_overall_structure() {
         exit $ERROR_STRUCTURE
       fi
 
-      if [[ $LINE =~ $JIRA_PATTERN ]]; then
+      if [[ $LINE =~ $JIRA_FOOTER_PATTERN ]]; then
         echo -e "missing empty line before JIRA reference"
         exit $ERROR_STRUCTURE
       fi
