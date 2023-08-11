@@ -414,11 +414,6 @@ BROKEN:
   [ "$status" -eq $ERROR_SUBJECT ]
 }
 
-@test "subject cannot start with a capitalized letter" {
-  run validate_subject "Plop"
-  [ "$status" -eq $ERROR_SUBJECT ]
-}
-
 @test "subject cannot end with a point" {
   run validate_subject "plop."
   [ "$status" -eq $ERROR_SUBJECT ]
@@ -616,7 +611,7 @@ Commit about stuff\"plop \"
 LUM-2345'
 
   run validate "$MESSAGE"
-  [[ "$status" -eq $ERROR_SUBJECT ]]
+  [[ "$status" -ne $ERROR_SUBJECT ]]
 }
 
 @test "overall validation invalid body length" {

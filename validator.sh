@@ -7,7 +7,7 @@ fi
 readonly HEADER_PATTERN="^([^\(]+)\(([^\)]+)\): (.+)$"
 readonly TYPE_PATTERN="^(feat|fix|docs|gen|lint|refactor|test|chore)$"
 readonly SCOPE_PATTERN="^([a-z][a-z0-9]*)(-[a-z0-9]+)*$"
-readonly SUBJECT_PATTERN="^([a-z0-9].*[^ ^\.])$"
+readonly SUBJECT_PATTERN="^([A-Za-z0-9].*[^ ^\.])$"
 readonly JIRA_PATTERN="[A-Z]{2,6}[0-9]{0,6}-[0-9]{1,6}"
 readonly JIRA_FOOTER_PATTERN="^(${JIRA_PATTERN} ?)+$"
 readonly JIRA_HEADER_PATTERN="^.*[^A-Z](${JIRA_PATTERN}).*$"
@@ -179,7 +179,7 @@ validate_subject() {
   local SUBJECT=$1
 
   if [[ ! $SUBJECT =~ $SUBJECT_PATTERN ]]; then
-     echo -e "commit subject '$SUBJECT' should start with a lower case and not end with a '.'"
+     echo -e "commit subject '$SUBJECT' should not end with a '.'"
      exit $ERROR_SUBJECT
   fi
 }

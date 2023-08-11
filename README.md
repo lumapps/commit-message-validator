@@ -113,7 +113,6 @@ A brief but meaningfull description of the change.
 Here are recommandations for writing your subject:
 
 - use the imperative, present tense: "change" not "changed" nor "changes"
-- don't capitalize first letter
 - no "." (dot) at the end
 
 ### Body
