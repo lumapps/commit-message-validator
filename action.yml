@@ -19,6 +19,9 @@ inputs:
   header_length:
     description: 'If not empty, max header_length'
     required: false
+  body_length:
+    description: 'If not empty, max body_length'
+    required: false
   jira_types:
     description: 'If not empty, space separated list of types that require Jira refs'
     required: false
@@ -46,5 +49,6 @@ runs:
         COMMIT_VALIDATOR_NO_REVERT_SHA1: ${{ inputs.no_revert_sha1 }}
         GLOBAL_JIRA_TYPES: ${{ inputs.jira_types }}
         GLOBAL_MAX_LENGTH: ${{ inputs.header_length }}
+        GLOBAL_BODY_MAX_LENGTH: ${{ inputs.body_length }}
         GLOBAL_JIRA_IN_HEADER: ${{ inputs.jira_in_header }}
       shell: bash

@@ -36,6 +36,7 @@ GLOBAL_FOOTER=""
 # Overridable variables
 GLOBAL_JIRA_TYPES="${GLOBAL_JIRA_TYPES:-feat fix}"
 GLOBAL_MAX_LENGTH="${GLOBAL_MAX_LENGTH:-100}"
+GLOBAL_BODY_MAX_LENGTH="${GLOBAL_BODY_MAX_LENGTH:-100}"
 GLOBAL_JIRA_IN_HEADER="${GLOBAL_JIRA_IN_HEADER:-}"
 
 GLOBAL_TYPE=""
@@ -197,8 +198,8 @@ validate_body_length() {
 
     LENGTH="$(echo -n "$LINE" | wc -c)"
 
-    if [[ $LENGTH -gt 100 ]]; then
-        echo -e "body message line length is more than 100 charaters"
+    if [[ $LENGTH -gt ${GLOBAL_BODY_MAX_LENGTH} ]]; then
+        echo -e "body message line length is more than ${GLOBAL_BODY_MAX_LENGTH} characters"
         exit $ERROR_BODY_LENGTH
     fi
   done <<< "$BODY"

@@ -457,6 +457,10 @@ LUM-2345'
   [[ "$status" -eq 0 ]]
 }
 
+@test "body length cannot be more than 150 with spaces. overridden" {
+  GLOBAL_BODY_MAX_LENGTH=150 validate_body_length "012345678 012345678 012345678 012345678 012345678 012345678 012345678 1"
+}
+
 @test "body with trailing space on line should not be valid" {
   MESSAGE='pdzofjzf '
 
