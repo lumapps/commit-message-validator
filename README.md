@@ -316,6 +316,7 @@ Then run `pre-commit install --hook-type commit-msg` to install the
 - if `no-revert-sha1` is set, no validation is done on revert commits.
 - if `--jira-in-header` jira reference can be put in the commit header.
 - `--header-length` allow to override the max length of the header line.
+- `--body-length` allow to override the max length of body lines.
 - `--jira-types` takes a space separated list `"feat fix"` as a parameter to override the default types requiring a jira
 
 <!-- ROADMAP -->
