@@ -54,8 +54,10 @@ validate_overall_structure() {
   local READING_FOOTER=5
 
   local STATE="$WAITING_HEADER"
+  local LINE_NUM=0
 
   while IFS= read -r LINE ; do
+    LINE_NUM=$((LINE_NUM + 1))
 
     if [[ $STATE -eq $WAITING_HEADER ]]; then
       GLOBAL_HEADER="$LINE"
@@ -66,14 +68,17 @@ validate_overall_structure() {
 
     elif [[ $STATE -eq $WAITING_EMPTY ]]; then
       if [[ $LINE != "" ]]; then
-        echo -e "missing empty line in commit message between header and body or body and footer"
+        echo -e "ERROR: Missing empty line at line ${LINE_NUM}"
+        echo -e "Expected: blank line between header and body (or body and footer)"
+        echo -e "Found: '${LINE}'"
         exit $ERROR_STRUCTURE
       fi
       STATE="$START_TEXT"
 
     elif [[ $STATE -eq $START_TEXT ]]; then
       if [[ $LINE = "" ]]; then
-        echo -e "double empty line is not allowed"
+        echo -e "ERROR: Double empty line found at line ${LINE_NUM}"
+        echo -e "Only one blank line is allowed between sections"
         exit $ERROR_STRUCTURE
       fi
 
@@ -89,12 +94,15 @@ validate_overall_structure() {
 
     elif [[ $STATE -eq $READING_BODY ]]; then
       if [[ $LINE =~ $BROKE_PATTERN ]]; then
-        echo -e "missing empty line before broke part"
+        echo -e "ERROR: Missing empty line before BROKEN section at line ${LINE_NUM}"
+        echo -e "Add a blank line before 'BROKEN:'"
         exit $ERROR_STRUCTURE
       fi
 
       if [[ $LINE =~ $JIRA_FOOTER_PATTERN ]]; then
-        echo -e "missing empty line before JIRA reference"
+        echo -e "ERROR: Missing empty line before JIRA reference at line ${LINE_NUM}"
+        echo -e "JIRA reference found: '${LINE}'"
+        echo -e "Add a blank line before the JIRA reference"
         exit $ERROR_STRUCTURE
       fi
 
@@ -108,27 +116,31 @@ validate_overall_structure() {
       if [[ $LINE =~ $BROKE_PATTERN ]]; then
         STATE="$READING_FOOTER"
       else
-        echo -e "only broken part could be after the JIRA reference"
+        echo -e "ERROR: Invalid content after JIRA reference at line ${LINE_NUM}"
+        echo -e "Found: '${LINE}'"
+        echo -e "Only 'BROKEN:' section is allowed after JIRA reference"
         exit $ERROR_STRUCTURE
       fi
 
     elif [[ $STATE -eq $READING_FOOTER ]]; then
       if [[ $LINE = "" ]]; then
-        echo -e "no empty line allowed in broken part"
+        echo -e "ERROR: Empty line found in BROKEN section at line ${LINE_NUM}"
+        echo -e "No empty lines are allowed within the BROKEN section"
         exit $ERROR_STRUCTURE
       fi
 
       GLOBAL_FOOTER=$GLOBAL_FOOTER$LINE$'\n'
 
     else
-      echo -e "unknown state in parsing machine"
+      echo -e "ERROR: Unknown state in parsing machine"
       exit $ERROR_STRUCTURE
     fi
 
   done <<< "$MESSAGE"
 
   if [[ $STATE -eq $START_TEXT ]]; then
-    echo -e "new line at the end of the commit is not allowed"
+    echo -e "ERROR: Trailing newline at end of commit message"
+    echo -e "Remove the extra blank line at the end"
     exit $ERROR_STRUCTURE
   fi
 }
@@ -145,7 +157,10 @@ validate_header() {
      GLOBAL_SCOPE=${BASH_REMATCH[2]}
      GLOBAL_SUBJECT=${BASH_REMATCH[3]}
   else
-     echo -e "commit header doesn't match overall header pattern: 'type(scope): message'"
+     echo -e "ERROR: Invalid commit header format"
+     echo -e "Header: '${HEADER}'"
+     echo -e "Expected format: type(scope): subject"
+     echo -e "Example: feat(user-auth): add login functionality"
      exit $ERROR_HEADER
   fi
 }
@@ -153,7 +168,10 @@ validate_header() {
 validate_header_length() {
   local HEADER="$1"
   if [[ ${#HEADER} -gt ${GLOBAL_MAX_LENGTH} ]]; then
-      echo -e "commit header length is more than ${GLOBAL_MAX_LENGTH} characters"
+      echo -e "ERROR: Commit header is too long"
+      echo -e "Header: '${HEADER}'"
+      echo -e "Length: ${#HEADER} characters (max: ${GLOBAL_MAX_LENGTH})"
+      echo -e "Shorten the header by $((${#HEADER} - ${GLOBAL_MAX_LENGTH})) characters"
       exit $ERROR_HEADER_LENGTH
   fi
 }
@@ -162,7 +180,9 @@ validate_type() {
   local TYPE=$1
 
   if [[ ! $TYPE =~ $TYPE_PATTERN ]]; then
-     echo -e "commit type '$TYPE' is unknown"
+     echo -e "ERROR: Invalid commit type"
+     echo -e "Type: '${TYPE}'"
+     echo -e "Allowed types: feat, fix, docs, gen, lint, refactor, test, chore"
      exit $ERROR_TYPE
   fi
 }
@@ -171,7 +191,10 @@ validate_scope() {
   local SCOPE=$1
 
   if [[ ! $SCOPE =~ $SCOPE_PATTERN ]]; then
-     echo -e "commit scope '$SCOPE' is not kebab-case"
+     echo -e "ERROR: Invalid scope format"
+     echo -e "Scope: '${SCOPE}'"
+     echo -e "Scope must be in kebab-case (lowercase, hyphens only)"
+     echo -e "Examples: user-auth, api-service, data-layer"
      exit $ERROR_SCOPE
   fi
 }
@@ -180,7 +203,12 @@ validate_subject() {
   local SUBJECT=$1
 
   if [[ ! $SUBJECT =~ $SUBJECT_PATTERN ]]; then
-     echo -e "commit subject '$SUBJECT' should not end with a '.'"
+     echo -e "ERROR: Invalid subject format"
+     echo -e "Subject: '${SUBJECT}'"
+     echo -e "Subject must not:"
+     echo -e "  - End with a period (.)"
+     echo -e "  - End with a space"
+     echo -e "  - Start with a capital letter (use imperative mood)"
      exit $ERROR_SUBJECT
   fi
 }
@@ -188,9 +216,11 @@ validate_subject() {
 validate_body_length() {
   local BODY=$1
   local LINE=""
+  local LINE_NUM=0
 
   while IFS= read -r LINE ;
   do
+    LINE_NUM=$((LINE_NUM + 1))
     # Skip lines with no spaces as they can't be split
     $(echo -n "$LINE" | grep -q "\s") || continue
 
@@ -199,7 +229,10 @@ validate_body_length() {
     LENGTH="$(echo -n "$LINE" | wc -c)"
 
     if [[ $LENGTH -gt ${GLOBAL_BODY_MAX_LENGTH} ]]; then
-        echo -e "body message line length is more than ${GLOBAL_BODY_MAX_LENGTH} characters"
+        echo -e "ERROR: Line too long in body"
+        echo -e "Line ${LINE_NUM}: '${LINE}'"
+        echo -e "Length: ${LENGTH} characters (max: ${GLOBAL_BODY_MAX_LENGTH})"
+        echo -e "Split this line into multiple lines"
         exit $ERROR_BODY_LENGTH
     fi
   done <<< "$BODY"
@@ -208,11 +241,15 @@ validate_body_length() {
 validate_trailing_space() {
   local BODY=$1
   local LINE=""
+  local LINE_NUM=0
 
   while IFS= read -r LINE ;
   do
+    LINE_NUM=$((LINE_NUM + 1))
     if [[ $LINE =~ $TRAILING_SPACE_PATTERN ]]; then
-        echo -e "body message must not have trailing spaces"
+        echo -e "ERROR: Trailing space found"
+        echo -e "Line ${LINE_NUM}: '${LINE}'"
+        echo -e "Remove trailing spaces from this line"
         exit $ERROR_TRAILING_SPACE
     fi
   done <<< "$BODY"
@@ -237,10 +274,19 @@ validate_jira() {
   local TYPE=$1
   local JIRA=$2
 
-
-
   if need_jira "$TYPE" && [[ -z "${JIRA:-}" ]]; then
-     echo -e "commits with type '${TYPE}' need to include a reference to a JIRA ticket, by adding the project prefix and the issue number to the commit message, this could be done easily with: git commit -m 'feat(widget): add a wonderful widget' -m LUM-1234"
+     echo -e "ERROR: Missing JIRA reference"
+     echo -e "Commit type '${TYPE}' requires a JIRA ticket reference"
+     echo -e ""
+     echo -e "Add the JIRA reference as a separate line in the footer:"
+     echo -e "  git commit -m 'feat(widget): add wonderful widget' -m 'PROJ-1234'"
+     echo -e ""
+     echo -e "Or include it in your commit message:"
+     echo -e "  feat(widget): add wonderful widget"
+     echo -e "  "
+     echo -e "  Description of the change."
+     echo -e "  "
+     echo -e "  PROJ-1234"
      exit $ERROR_JIRA
   fi
 }
@@ -262,7 +308,9 @@ validate_revert() {
   done <<< "$BODY"
 
   if [[ "$REVERTED_COMMIT" = "" ]]; then
-    echo -e "revert commit should contain the reverted sha1"
+    echo -e "ERROR: Missing reverted commit SHA"
+    echo -e "Revert commits must contain the reverted commit SHA"
+    echo -e "Expected format: 'This reverts commit <sha1>'"
     exit $ERROR_REVERT
   fi
 }
