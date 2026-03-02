@@ -13,7 +13,7 @@ readonly JIRA_FOOTER_PATTERN="^(${JIRA_PATTERN} ?)+$"
 readonly JIRA_HEADER_PATTERN="^.*[^A-Z](${JIRA_PATTERN}).*$"
 readonly BROKE_PATTERN="^BROKEN:$"
 readonly TRAILING_SPACE_PATTERN=" +$"
-readonly REVERT_HEADER_PATTERN="^[R|r]evert[: ].*$"
+readonly REVERT_HEADER_PATTERN="^[R|r](evert|apply)[: ].*$"
 readonly REVERT_COMMIT_PATTERN="^This reverts commit ([a-f0-9]+)"
 readonly TEMP_HEADER_PATTERN="^(fixup!|squash!).*$"
 
