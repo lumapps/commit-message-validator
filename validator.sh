@@ -1,9 +1,3 @@
-if [[ -v ZSH_NAME ]]; then
-  setopt BASH_REMATCH
-  setopt RE_MATCH_PCRE
-  setopt KSH_ARRAYS
-fi
-
 readonly HEADER_PATTERN="^([^\(]+)\(([^\)]+)\): (.+)$"
 readonly TYPE_PATTERN="^(feat|fix|docs|gen|lint|refactor|test|chore)$"
 readonly SCOPE_PATTERN="^([a-z][a-z0-9]*)(-[a-z0-9]+)*$"
