@@ -10,8 +10,11 @@ while [[ $# -gt 0 ]]; do
     --allow-temp ) COMMIT_VALIDATOR_ALLOW_TEMP=1; shift ;;
     --no-revert-sha1 ) COMMIT_VALIDATOR_NO_REVERT_SHA1=1; shift ;;
     --jira-in-header ) GLOBAL_JIRA_IN_HEADER=1; shift ;;
+    --header-length=* ) GLOBAL_MAX_LENGTH="${1#*=}"; shift ;;
     --header-length ) GLOBAL_MAX_LENGTH="$2"; shift 2 ;;
+    --body-length=* ) GLOBAL_BODY_MAX_LENGTH="${1#*=}"; shift ;;
     --body-length ) GLOBAL_BODY_MAX_LENGTH="$2"; shift 2 ;;
+    --jira-types=* ) GLOBAL_JIRA_TYPES="${1#*=}"; shift ;;
     --jira-types ) GLOBAL_JIRA_TYPES="$2"; shift 2 ;;
     -- ) shift; break ;;
     * ) break ;;
