@@ -16,5 +16,5 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Unit tests on Validator
-      run: bats ./validator.bats
+    - name: Unit tests
+      run: bats ./*.bats
