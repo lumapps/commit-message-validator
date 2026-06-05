@@ -35,8 +35,8 @@ fi
 # removing comment lines from message
 MESSAGE=$(sed '/^#/d' "$1")
 
-FIRST_WORD=${MESSAGE%% *}
-if [[ "${FIRST_WORD,,}" == merge ]]
+FIRST_WORD=$(echo "${MESSAGE%% *}" | tr '[:upper:]' '[:lower:]')
+if [[ "${FIRST_WORD}" == merge ]]
 then
    # ignore merge commits (merge after conflict resolution)
   exit
