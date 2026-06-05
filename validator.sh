@@ -186,13 +186,9 @@ validate_body_length() {
   while IFS= read -r LINE ;
   do
     # Skip lines with no spaces as they can't be split
-    $(echo -n "$LINE" | grep -q "\s") || continue
+    [[ ! "$LINE" =~ [[:space:]] ]] && continue
 
-    local LENGTH
-
-    LENGTH="$(echo -n "$LINE" | wc -c)"
-
-    if [[ $LENGTH -gt ${GLOBAL_BODY_MAX_LENGTH} ]]; then
+    if [[ "${#LINE}" -gt ${GLOBAL_BODY_MAX_LENGTH} ]]; then
         echo -e "body message line length is more than ${GLOBAL_BODY_MAX_LENGTH} characters"
         exit $ERROR_BODY_LENGTH
     fi
