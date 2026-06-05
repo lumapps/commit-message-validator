@@ -27,6 +27,18 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
+@test "check_message: skips message starting with 'MERGE' (all caps)" {
+  echo "MERGE branch 'feature' into 'main'" > "$TMPFILE"
+  run bash "$SCRIPT" "$TMPFILE"
+  [ "$status" -eq 0 ]
+}
+
+@test "check_message: skips message starting with 'MeRgE' (mixed case)" {
+  echo "MeRgE branch 'test'" > "$TMPFILE"
+  run bash "$SCRIPT" "$TMPFILE"
+  [ "$status" -eq 0 ]
+}
+
 @test "check_message: strips comment lines before validating" {
   printf "# This is a comment\nfeat(scope): valid subject\n" > "$TMPFILE"
   run bash "$SCRIPT" --no-jira "$TMPFILE"
