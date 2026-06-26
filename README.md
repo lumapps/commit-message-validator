@@ -280,6 +280,7 @@ jobs:
   and `squash!` commits.
 - if `no_revert_sha1` is not empty, no validation is done on revert
   commits.
+- if `no_merge` is not empty, merge commits are rejected (fail instead of skip).
 - `jira_in_header` jira reference can be put in the commit header.
 - `header_length` allow to override the max length of the header line.
 - `jira_types` takes a space separated list `"feat fix"` as a parameter to override the default types requiring a jira
@@ -314,6 +315,7 @@ Then run `pre-commit install --hook-type commit-msg` to install the
 - if `allow-temp` is set, no validation is done on `fixup!` and `squash!`
   commits.
 - if `no-revert-sha1` is set, no validation is done on revert commits.
+- if `--no-merge` is set, merge commits are rejected (fail instead of skip).
 - if `--jira-in-header` jira reference can be put in the commit header.
 - `--header-length` allow to override the max length of the header line.
 - `--body-length` allow to override the max length of body lines.

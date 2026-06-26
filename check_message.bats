@@ -39,6 +39,24 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
+@test "check_message: --no-merge rejects MERGE_MSG path" {
+  echo "Merge branch 'foo' into 'bar'" > "$TMPFILE"
+  run bash "$SCRIPT" --no-merge "/some/path/MERGE_MSG"
+  [ "$status" -ne 0 ]
+}
+
+@test "check_message: --no-merge rejects message starting with 'Merge'" {
+  echo "Merge branch 'foo' into 'bar'" > "$TMPFILE"
+  run bash "$SCRIPT" --no-merge "$TMPFILE"
+  [ "$status" -ne 0 ]
+}
+
+@test "check_message: --no-merge still accepts valid commit" {
+  echo "feat(widget): add a wonderful widget" > "$TMPFILE"
+  run bash "$SCRIPT" --no-merge --no-jira "$TMPFILE"
+  [ "$status" -eq 0 ]
+}
+
 @test "check_message: strips comment lines before validating" {
   printf "# This is a comment\nfeat(scope): valid subject\n" > "$TMPFILE"
   run bash "$SCRIPT" --no-jira "$TMPFILE"

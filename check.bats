@@ -32,3 +32,21 @@ teardown() {
   run env COMMIT_VALIDATOR_NO_JIRA=1 bash -c "cd '$REPO' && bash '$SCRIPT' '$BASE..$BASE'"
   [ "$status" -eq 0 ]
 }
+
+@test "check: skips merge commits by default" {
+  git -C "$REPO" checkout -q -b feature
+  git -C "$REPO" commit --allow-empty -q -m "feat(widget): add widget"
+  git -C "$REPO" checkout -q master 2>/dev/null || git -C "$REPO" checkout -q main 2>/dev/null || git -C "$REPO" checkout -q -
+  git -C "$REPO" merge --no-ff -q --no-edit feature
+  run env COMMIT_VALIDATOR_NO_JIRA=1 bash -c "cd '$REPO' && bash '$SCRIPT' '$BASE..HEAD'"
+  [ "$status" -eq 0 ]
+}
+
+@test "check: --no-merge rejects merge commits in range" {
+  git -C "$REPO" checkout -q -b feature
+  git -C "$REPO" commit --allow-empty -q -m "feat(widget): add widget"
+  git -C "$REPO" checkout -q master 2>/dev/null || git -C "$REPO" checkout -q main 2>/dev/null || git -C "$REPO" checkout -q -
+  git -C "$REPO" merge --no-ff -q --no-edit feature
+  run env COMMIT_VALIDATOR_NO_JIRA=1 COMMIT_VALIDATOR_NO_MERGE=1 bash -c "cd '$REPO' && bash '$SCRIPT' '$BASE..HEAD'"
+  [ "$status" -ne 0 ]
+}

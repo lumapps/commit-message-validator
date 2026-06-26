@@ -28,6 +28,9 @@ inputs:
   jira_in_header:
     description: 'If not empty, allow for jira ref in header'
     required: false
+  no_merge:
+    description: 'If not empty, merge commits are rejected.'
+    required: false
 runs:
   using: "composite"
   steps:
@@ -51,4 +54,5 @@ runs:
         GLOBAL_MAX_LENGTH: ${{ inputs.header_length }}
         GLOBAL_BODY_MAX_LENGTH: ${{ inputs.body_length }}
         GLOBAL_JIRA_IN_HEADER: ${{ inputs.jira_in_header }}
+        COMMIT_VALIDATOR_NO_MERGE: ${{ inputs.no_merge }}
       shell: bash

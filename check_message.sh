@@ -2,13 +2,14 @@
 
 set -eu
 
-unset COMMIT_VALIDATOR_ALLOW_TEMP COMMIT_VALIDATOR_NO_JIRA COMMIT_VALIDATOR_NO_REVERT_SHA1 GLOBAL_JIRA_IN_HEADER GLOBAL_MAX_LENGTH GLOBAL_BODY_MAX_LENGTH GLOBAL_JIRA_TYPES
+unset COMMIT_VALIDATOR_ALLOW_TEMP COMMIT_VALIDATOR_NO_JIRA COMMIT_VALIDATOR_NO_REVERT_SHA1 COMMIT_VALIDATOR_NO_MERGE GLOBAL_JIRA_IN_HEADER GLOBAL_MAX_LENGTH GLOBAL_BODY_MAX_LENGTH GLOBAL_JIRA_TYPES
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --no-jira ) COMMIT_VALIDATOR_NO_JIRA=1; shift ;;
     --allow-temp ) COMMIT_VALIDATOR_ALLOW_TEMP=1; shift ;;
     --no-revert-sha1 ) COMMIT_VALIDATOR_NO_REVERT_SHA1=1; shift ;;
+    --no-merge ) COMMIT_VALIDATOR_NO_MERGE=1; shift ;;
     --jira-in-header ) GLOBAL_JIRA_IN_HEADER=1; shift ;;
     --header-length=* ) GLOBAL_MAX_LENGTH="${1#*=}"; shift ;;
     --header-length ) GLOBAL_MAX_LENGTH="$2"; shift 2 ;;
@@ -28,6 +29,10 @@ source "$DIR/validator.sh"
 
 if [[ "$1" == *MERGE_MSG ]]
 then
+  if [[ -n "${COMMIT_VALIDATOR_NO_MERGE:-}" ]]; then
+    echo "error: merge commits are not allowed"
+    exit 1
+  fi
   # ignore merge message (merge with --no-ff without conflict)
   exit
 fi
@@ -38,9 +43,12 @@ MESSAGE=$(sed '/^#/d' "$1")
 FIRST_WORD=$(echo "${MESSAGE%% *}" | tr '[:upper:]' '[:lower:]')
 if [[ "${FIRST_WORD}" == merge ]]
 then
-   # ignore merge commits (merge after conflict resolution)
+  if [[ -n "${COMMIT_VALIDATOR_NO_MERGE:-}" ]]; then
+    echo "error: merge commits are not allowed"
+    exit 1
+  fi
+  # ignore merge commits (merge after conflict resolution)
   exit
-
 fi
 
 # print message so you don't lose it in case of errors
