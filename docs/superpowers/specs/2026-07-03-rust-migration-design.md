@@ -128,6 +128,9 @@ otherwise the env var, otherwise the default:
   builds and passes tests on its own — e.g. one commit per module (test+impl
   together, since TDD pairs them), one for the CLI, one per distribution surface.
   Follow this repo's own commit convention (validated by the tool itself).
+- **Quality cadence.** Run `/simplify` and `/code-review` regularly during
+  implementation — at minimum before each atomic commit / at the end of each
+  phase — and address findings before committing.
 
 ## Distribution / CI
 
@@ -154,3 +157,6 @@ otherwise the env var, otherwise the default:
 4. Release workflow (tagged, cross-platform static binaries).
 5. Distribution surfaces: `action.yml`, `pre-push`, `.pre-commit-hooks.yaml`
    download shim; remove obsolete bash + `.bats`.
+
+All work happens on a feature branch. At the end, **open a draft PR** against
+`master` for review.
