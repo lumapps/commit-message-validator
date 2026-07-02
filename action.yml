@@ -1,7 +1,7 @@
 ---
 name: 'Commit message validator'
 description: >
-  Enforce angular commit message convention with minimal dependency only git and bash.
+  Enforce angular commit message convention using a prebuilt Rust binary.
 author: 'Sébastien Boulle'
 branding:
   icon: 'check-square'
@@ -17,17 +17,21 @@ inputs:
     description: 'If not empty, reverted sha1 commit is not mandatory in revert commit message.'
     required: false
   header_length:
-    description: 'If not empty, max header_length'
+    description: 'If not empty, max header length.'
     required: false
   body_length:
-    description: 'If not empty, max body_length'
+    description: 'If not empty, max body length.'
     required: false
   jira_types:
-    description: 'If not empty, space separated list of types that require Jira refs'
+    description: 'If not empty, space separated list of types that require Jira refs.'
     required: false
   jira_in_header:
-    description: 'If not empty, allow for jira ref in header'
+    description: 'If not empty, allow for jira ref in header.'
     required: false
+  version:
+    description: 'Release tag of the validator binary to download (defaults to the action ref).'
+    required: false
+    default: ''
 runs:
   using: "composite"
   steps:
@@ -39,16 +43,34 @@ runs:
       run: git fetch origin ${{ github.event.pull_request.head.sha }}
       shell: bash
 
+    - name: Download validator binary
+      shell: bash
+      run: |
+        set -euo pipefail
+        case "$(uname -s)-$(uname -m)" in
+          Linux-x86_64)   target=x86_64-unknown-linux-musl ;;
+          Linux-aarch64)  target=aarch64-unknown-linux-musl ;;
+          Darwin-x86_64)  target=x86_64-apple-darwin ;;
+          Darwin-arm64)   target=aarch64-apple-darwin ;;
+          *) echo "unsupported platform: $(uname -s)-$(uname -m)" >&2; exit 1 ;;
+        esac
+        version="${{ inputs.version }}"
+        if [ -z "$version" ]; then version="${{ github.action_ref }}"; fi
+        url="https://github.com/lumapps/commit-message-validator/releases/download/${version}/commit-message-validator-${target}"
+        curl -sSfL "$url" -o /tmp/commit-message-validator
+        chmod +x /tmp/commit-message-validator
+
     - name: Validation
       run: |
-        ${{ github.action_path }}/check.sh \
-        ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | tee -a $GITHUB_STEP_SUMMARY
+        /tmp/commit-message-validator range \
+          ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} \
+          | tee -a "$GITHUB_STEP_SUMMARY"
       env:
         COMMIT_VALIDATOR_NO_JIRA: ${{ inputs.no_jira }}
         COMMIT_VALIDATOR_ALLOW_TEMP: ${{ inputs.allow_temp }}
         COMMIT_VALIDATOR_NO_REVERT_SHA1: ${{ inputs.no_revert_sha1 }}
+        GLOBAL_JIRA_IN_HEADER: ${{ inputs.jira_in_header }}
         GLOBAL_JIRA_TYPES: ${{ inputs.jira_types }}
         GLOBAL_MAX_LENGTH: ${{ inputs.header_length }}
         GLOBAL_BODY_MAX_LENGTH: ${{ inputs.body_length }}
-        GLOBAL_JIRA_IN_HEADER: ${{ inputs.jira_in_header }}
       shell: bash
