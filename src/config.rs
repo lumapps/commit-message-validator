@@ -43,7 +43,7 @@ fn resolve_usize(cli: Option<usize>, env: Option<String>, default: usize) -> usi
 
 impl Config {
     pub fn resolve(o: &Overrides, env: impl Fn(&str) -> Option<String>) -> Config {
-        let flag = |cli: bool, name: &str| cli || env(name).map(|v| !v.is_empty()).unwrap_or(false);
+        let flag = |cli: bool, name: &str| cli || env(name).is_some_and(|v| !v.is_empty());
         let default = Config::default();
         let jira_types = o
             .jira_types
