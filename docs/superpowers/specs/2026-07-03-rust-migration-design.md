@@ -106,6 +106,13 @@ otherwise the env var, otherwise the default:
 
 ## Testing
 
+- **Workflow: strict TDD.** For every rule and code path, write the failing test
+  first, then the minimal implementation to pass, then refactor. Tests are ported
+  from the `.bats` suites as the golden reference before the corresponding Rust
+  code exists.
+- **Coverage target: 100%.** Measured with `cargo llvm-cov`. CI fails if coverage
+  regresses below the threshold. Any intentionally-uncovered line must carry an
+  explicit justification.
 - **Unit tests** per module for the pure core — the bulk, ported from
   `validator.bats` (~16.7 KB of cases) as table-driven tests asserting
   `(exit code, message)` per input. This is the equivalence proof.
@@ -115,10 +122,20 @@ otherwise the env var, otherwise the default:
 - The old `.bats` files are removed once their cases are ported (retained in git
   history).
 
+## Commits
+
+- **Atomic, review-friendly commits.** Each commit is a single logical step that
+  builds and passes tests on its own — e.g. one commit per module (test+impl
+  together, since TDD pairs them), one for the CLI, one per distribution surface.
+  Follow this repo's own commit convention (validated by the tool itself).
+
 ## Distribution / CI
 
-- **Release workflow:** build static binaries for `x86_64`/`aarch64` ×
-  linux(musl)/macOS, attach to the GitHub Release for the tag.
+- **CI workflow (GitHub Actions, on push/PR):** `cargo fmt --check`,
+  `cargo clippy -D warnings`, `cargo test`, and `cargo llvm-cov` with the 100%
+  coverage gate. This must be green before merge.
+- **Release workflow:** on tag push, build static binaries for `x86_64`/`aarch64`
+  × linux(musl)/macOS and attach them to the GitHub Release for the tag.
 - **`action.yml`:** composite action downloads the binary matching the runner
   os/arch (cached via `actions/cache`) and runs `range`, keeping the existing
   `inputs → env` wiring.
@@ -129,8 +146,11 @@ otherwise the env var, otherwise the default:
 
 ## Phasing
 
-1. Core library (`config`, `error`, `patterns`, `parser`, `validate`,
-   `preprocess`) + unit tests ported from `validator.bats`.
-2. CLI (`main.rs`, clap subcommands, git subprocess) + `tests/cli.rs`.
-3. Distribution: release build workflow, `action.yml`, `pre-push`,
-   `.pre-commit-hooks.yaml` download shim; remove obsolete bash + `.bats`.
+1. Scaffold Cargo package + **CI workflow first** (fmt/clippy/test/llvm-cov gate),
+   so every subsequent commit is checked in GitHub from the start.
+2. Core library (`config`, `error`, `patterns`, `parser`, `validate`,
+   `preprocess`) built TDD, unit tests ported from `validator.bats`.
+3. CLI (`main.rs`, clap subcommands, git subprocess) + `tests/cli.rs`.
+4. Release workflow (tagged, cross-platform static binaries).
+5. Distribution surfaces: `action.yml`, `pre-push`, `.pre-commit-hooks.yaml`
+   download shim; remove obsolete bash + `.bats`.
