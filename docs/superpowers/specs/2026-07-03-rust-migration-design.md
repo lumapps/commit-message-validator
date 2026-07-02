@@ -160,3 +160,19 @@ otherwise the env var, otherwise the default:
 
 All work happens on a feature branch. At the end, **open a draft PR** against
 `master` for review.
+
+## Documentation updates
+
+Update all repo docs to reflect the Rust tool (part of phase 5):
+
+- **`README.md`** — replace the "only git and bash" framing with the Rust binary
+  story; update installation (prebuilt binary download), usage of the `message`
+  and `range` subcommands, the pre-commit / GitHub Action / pre-push examples,
+  and the flags/env table.
+- **`git-commit-template`** — review for any wording that references the bash
+  scripts; keep the convention guidance accurate.
+- **`.pre-commit-config.yaml`** — update the self-referencing hook example to the
+  new download-shim hook.
+- **`Makefile`** — adjust `lint`/`venv` targets if they reference removed scripts.
+- Any inline references to `check.sh` / `check_message.sh` / `validator.sh`
+  across the repo are updated or removed.
