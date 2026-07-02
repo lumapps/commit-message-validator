@@ -90,6 +90,18 @@ fn no_jira_via_env_var() {
 }
 
 #[test]
+fn message_accepts_realistic_commit_editmsg_with_comment_block() {
+    let f = write_msg(
+        "feat(scope): valid subject\n\nsome body text\n\n# Please enter the commit message for your changes.\n# Lines starting with '#' will be ignored.\n",
+    );
+    Command::cargo_bin("commit-message-validator")
+        .unwrap()
+        .args(["--no-jira", "message", f.path().to_str().unwrap()])
+        .assert()
+        .success();
+}
+
+#[test]
 fn message_missing_file_errors() {
     Command::cargo_bin("commit-message-validator")
         .unwrap()

@@ -21,7 +21,8 @@ pub fn preprocess_message_file(path: &str, contents: &str) -> Preprocessed {
         return Preprocessed::Skip;
     }
 
-    Preprocessed::Message(stripped)
+    // Mirror command substitution's stripping of all trailing newlines.
+    Preprocessed::Message(stripped.trim_end_matches('\n').to_string())
 }
 
 #[cfg(test)]
@@ -68,6 +69,18 @@ mod tests {
     fn returns_message_for_normal_commit() {
         match preprocess_message_file("/x/COMMIT_EDITMSG", "feat(widget): add a widget") {
             Preprocessed::Message(m) => assert_eq!(m, "feat(widget): add a widget"),
+            Preprocessed::Skip => panic!("should not skip"),
+        }
+    }
+
+    #[test]
+    fn strips_trailing_blank_lines_before_comment_block() {
+        // realistic commit-msg file: blank line + comment block get stripped, no trailing newline remains
+        match preprocess_message_file(
+            "/x/COMMIT_EDITMSG",
+            "feat(x): y\n\nbody\n\n# Please enter the commit message\n",
+        ) {
+            Preprocessed::Message(m) => assert_eq!(m, "feat(x): y\n\nbody"),
             Preprocessed::Skip => panic!("should not skip"),
         }
     }
