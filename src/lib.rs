@@ -2,6 +2,7 @@ pub mod config;
 pub mod error;
 mod parser;
 mod patterns;
+pub mod preprocess;
 mod validate;
 
 pub use config::{Config, Overrides};
