@@ -110,9 +110,9 @@ otherwise the env var, otherwise the default:
   first, then the minimal implementation to pass, then refactor. Tests are ported
   from the `.bats` suites as the golden reference before the corresponding Rust
   code exists.
-- **Coverage target: 100%.** Measured with `cargo llvm-cov`. CI fails if coverage
-  regresses below the threshold. Any intentionally-uncovered line must carry an
-  explicit justification.
+- **Coverage: aim for 100%,** measured with `cargo llvm-cov`. CI **hard-fails
+  under 90%**. Any intentionally-uncovered line must carry an explicit
+  justification.
 - **Unit tests** per module for the pure core — the bulk, ported from
   `validator.bats` (~16.7 KB of cases) as table-driven tests asserting
   `(exit code, message)` per input. This is the equivalence proof.
@@ -135,8 +135,8 @@ otherwise the env var, otherwise the default:
 ## Distribution / CI
 
 - **CI workflow (GitHub Actions, on push/PR):** `cargo fmt --check`,
-  `cargo clippy -D warnings`, `cargo test`, and `cargo llvm-cov` with the 100%
-  coverage gate. This must be green before merge.
+  `cargo clippy -D warnings`, `cargo test`, and `cargo llvm-cov` with a hard-fail
+  under 90% coverage (100% aimed for). This must be green before merge.
 - **Release workflow:** on tag push, build static binaries for `x86_64`/`aarch64`
   × linux(musl)/macOS and attach them to the GitHub Release for the tag.
 - **`action.yml`:** composite action downloads the binary matching the runner
