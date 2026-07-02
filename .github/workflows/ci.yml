@@ -1,20 +1,25 @@
-name: 'Automated tests'
-
+---
+name: CI
 on:
-  [pull_request, push]
+  push:
+    branches: [master]
+  pull_request:
 
 jobs:
-  tests:
+  test:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Install bats
-      run: |
-        git clone https://github.com/bats-core/bats-core.git $HOME/bats-core
-        sudo $HOME/bats-core/install.sh /usr/local
-
-    - name: Checkout
-      uses: actions/checkout@v2
-
-    - name: Unit tests
-      run: bats ./*.bats
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Format
+        run: cargo fmt --all -- --check
+      - name: Clippy
+        run: cargo clippy --all-targets -- -D warnings
+      - name: Test
+        run: cargo test --all-targets
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+      - name: Coverage (fail under 90%)
+        run: cargo llvm-cov --all-targets --fail-under-lines 90

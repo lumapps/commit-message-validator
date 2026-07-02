@@ -1,0 +1,24 @@
+[package]
+name = "commit-message-validator"
+version = "2.0.0"
+edition = "2021"
+rust-version = "1.80"
+description = "Enforce angular commit message convention"
+license = "MIT"
+
+[[bin]]
+name = "commit-message-validator"
+path = "src/main.rs"
+
+[lib]
+name = "commit_message_validator"
+path = "src/lib.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive", "env"] }
+regex = "1"
+
+[dev-dependencies]
+assert_cmd = "2"
+predicates = "3"
+tempfile = "3"
