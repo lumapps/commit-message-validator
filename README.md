@@ -19,8 +19,8 @@
   <h3 align="center">Commit message validator</h3>
 
   <p align="center">
-    Enforce angular commit message convention with minimal dependancy only
-    git and bash.
+    Enforce angular commit message convention with a single prebuilt Rust
+    binary (git is still required to read commits).
     <br />
     <a href="https://github.com/lumapps/commit-message-validator">
       <strong>Explore the docs »
@@ -58,7 +58,7 @@
 
 ## About The Project
 
-The provided script enforce Angular commit message convention, with an
+The provided binary enforces Angular commit message convention, with an
 opinionated reduction of allowed types. Moreover, it enforces reference to a
 project management tools named JIRA.
 
@@ -171,8 +171,7 @@ Thus we won't enforce one or the other, we will only enfore:
 
 ### Built With
 
-- [bash](https://www.gnu.org/software/bash/)
-- [bats](https://github.com/sstephenson/bats)
+- [Rust](https://www.rust-lang.org/)
 
 <!-- GETTING STARTED -->
 
@@ -182,59 +181,68 @@ To get a local copy up and running follow these steps.
 
 ### Prerequisites
 
-1. Install bash
-
-   ```sh
-   sudo apt install bash
-   ```
-
-2. Install bats for development testing
-
-   ```sh
-   sudo apt install bats
-   ```
+- `git`, to read the commits being validated.
 
 ### Installation
 
-1. Clone the commit-message-validator
+Download the prebuilt binary for your platform from the
+[Releases page](https://github.com/lumapps/commit-message-validator/releases),
+one of:
 
-   ```sh
-   git clone https://github.com/lumapps/commit-message-validator.git
-   ```
+- `commit-message-validator-x86_64-unknown-linux-musl`
+- `commit-message-validator-aarch64-unknown-linux-musl`
+- `commit-message-validator-x86_64-apple-darwin`
+- `commit-message-validator-aarch64-apple-darwin`
 
-That's all, your ready to go !
+then make it executable and put it on your `PATH`:
+
+```sh
+chmod +x commit-message-validator-<target>
+mv commit-message-validator-<target> /usr/local/bin/commit-message-validator
+```
+
+Alternatively, use the [pre-commit hook](#add-pre-commit-plugin) or the
+[GitHub Action](#getting-started-with-github-action), which download the
+binary for you.
 
 <!-- USAGE EXAMPLES -->
 
 ## Usage
 
-Check the commit message referenced by \<commit1\>:
+Check a single commit message file (used as a `commit-msg` hook):
 
 ```sh
-./check.sh <commit1>
+commit-message-validator message <file>
 ```
 
-Check all the commits between 2 references:
+Check all the commits in a range:
 
 ```sh
-./check.sh <commit1>..<commit2>
+commit-message-validator range <commit1>..<commit2>
 ```
 
-Behind the hood, the script use `git log` to list all the commit thus any
-syntax allowed by git will be working.
+Behind the hood, the `range` subcommand uses `git log` to list all the
+commits, thus any revision range syntax allowed by git will work.
 
-You can also use the pre-push commit validator, simply copy, `pre-push`,
-`validator.sh` and `check.sh` files
-in `.git/hooks` directory of your repository.
+You can also use the pre-push commit validator: copy the `pre-push` file
+and the whole `hooks/` directory into the `.git/hooks` directory of your
+repository (the `pre-push` script downloads/invokes the
+`hooks/commit-message-validator` shim to validate each pushed commit).
 
 ### Command line Options
 
-- if `COMMIT_VALIDATOR_NO_JIRA` environment variable is not empty,
-  no validation is done on JIRA refs.
-- if `COMMIT_VALIDATOR_ALLOW_TEMP` environment variable is not empty,
-  no validation is done on `fixup!` and `squash!` commits.
-- if `COMMIT_VALIDATOR_NO_REVERT_SHA1` environment variable is not empty,
-  no validation is done revert commits.
+| Flag | Environment variable | Default | Description |
+| --- | --- | --- | --- |
+| `--no-jira` | `COMMIT_VALIDATOR_NO_JIRA` | disabled | No validation is done on JIRA refs. |
+| `--allow-temp` | `COMMIT_VALIDATOR_ALLOW_TEMP` | disabled | No validation is done on `fixup!` and `squash!` commits. |
+| `--no-revert-sha1` | `COMMIT_VALIDATOR_NO_REVERT_SHA1` | disabled | No validation is done on revert commits. |
+| `--jira-in-header` | `GLOBAL_JIRA_IN_HEADER` | disabled | Allow the JIRA reference to appear in the header. |
+| `--header-length N` | `GLOBAL_MAX_LENGTH` | `100` | Maximum length of the header line. |
+| `--body-length N` | `GLOBAL_BODY_MAX_LENGTH` | `100` | Maximum length of body lines. |
+| `--jira-types LIST` | `GLOBAL_JIRA_TYPES` | `"feat fix"` | Space separated list of types requiring a JIRA reference. |
+
+A CLI flag always takes precedence over its environment variable
+equivalent.
 
 ### Commit template
 
@@ -352,7 +360,7 @@ learn, inspire, and create. Any contributions you make are **greatly appreciated
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Run the tests (`bats -j 100 validator.bats`)
+4. Run the tests (`cargo test`)
 5. Push to the Branch (`git push origin feature/AmazingFeature`)
 6. Open a pull request
 
