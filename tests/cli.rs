@@ -97,3 +97,93 @@ fn message_missing_file_errors() {
         .assert()
         .failure();
 }
+
+use std::process::Command as StdCommand;
+
+fn git(repo: &std::path::Path, args: &[&str]) {
+    let status = StdCommand::new("git")
+        .current_dir(repo)
+        .args(args)
+        .status()
+        .unwrap();
+    assert!(status.success(), "git {args:?} failed");
+}
+
+fn init_repo() -> tempfile::TempDir {
+    let dir = tempfile::tempdir().unwrap();
+    git(dir.path(), &["init", "-q"]);
+    git(dir.path(), &["config", "user.email", "test@test.com"]);
+    git(dir.path(), &["config", "user.name", "Test"]);
+    git(
+        dir.path(),
+        &[
+            "commit",
+            "--allow-empty",
+            "-q",
+            "-m",
+            "chore(init): initial commit",
+        ],
+    );
+    dir
+}
+
+#[test]
+fn range_accepts_valid_commits() {
+    let dir = init_repo();
+    git(
+        dir.path(),
+        &[
+            "commit",
+            "--allow-empty",
+            "-q",
+            "-m",
+            "feat(widget): add widget",
+        ],
+    );
+    Command::cargo_bin("commit-message-validator")
+        .unwrap()
+        .current_dir(dir.path())
+        .env("COMMIT_VALIDATOR_NO_JIRA", "1")
+        .args(["range", "HEAD~1..HEAD"])
+        .assert()
+        .success();
+}
+
+#[test]
+fn range_rejects_invalid_commit() {
+    let dir = init_repo();
+    git(
+        dir.path(),
+        &["commit", "--allow-empty", "-q", "-m", "bad commit message"],
+    );
+    Command::cargo_bin("commit-message-validator")
+        .unwrap()
+        .current_dir(dir.path())
+        .env("COMMIT_VALIDATOR_NO_JIRA", "1")
+        .args(["range", "HEAD~1..HEAD"])
+        .assert()
+        .failure();
+}
+
+#[test]
+fn range_empty_succeeds() {
+    let dir = init_repo();
+    Command::cargo_bin("commit-message-validator")
+        .unwrap()
+        .current_dir(dir.path())
+        .env("COMMIT_VALIDATOR_NO_JIRA", "1")
+        .args(["range", "HEAD..HEAD"])
+        .assert()
+        .success();
+}
+
+#[test]
+fn range_bad_revision_errors() {
+    let dir = init_repo();
+    Command::cargo_bin("commit-message-validator")
+        .unwrap()
+        .current_dir(dir.path())
+        .args(["range", "not-a-real-ref..HEAD"])
+        .assert()
+        .failure();
+}

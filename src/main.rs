@@ -92,16 +92,54 @@ fn run_message(file: &str, config: &Config) -> u8 {
     }
 }
 
+fn git_output(args: &[&str]) -> Result<String, String> {
+    let output = std::process::Command::new("git")
+        .args(args)
+        .output()
+        .map_err(|e| format!("failed to run git: {e}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "git {args:?} failed: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        ));
+    }
+    Ok(String::from_utf8_lossy(&output.stdout).into_owned())
+}
+
+fn run_range(range: &str, config: &Config) -> u8 {
+    let hashes = match git_output(&["log", "--no-merges", "--pretty=%H", "--no-decorate", range]) {
+        Ok(out) => out,
+        Err(e) => {
+            eprintln!("{e}");
+            return 1;
+        }
+    };
+    for hash in hashes.lines() {
+        let message = match git_output(&["log", "-1", "--pretty=%B", hash]) {
+            Ok(m) => m,
+            Err(e) => {
+                eprintln!("{e}");
+                return 1;
+            }
+        };
+        println!("checking commit {hash}...");
+        // %B carries a trailing newline; trim it like bash command substitution.
+        let code = report(validate_message(message.trim_end_matches('\n'), config));
+        if code != 0 {
+            return code;
+        }
+    }
+    println!("All commits successfully checked");
+    0
+}
+
 fn main() -> ExitCode {
     let cli = Cli::parse();
     let config = Config::resolve(&cli.opts.to_overrides(), |name| std::env::var(name).ok());
 
     let code = match &cli.command {
         Command::Message { file } => run_message(file, &config),
-        Command::Range { range } => {
-            eprintln!("range not yet implemented for '{range}'");
-            1
-        }
+        Command::Range { range } => run_range(range, &config),
     };
     ExitCode::from(code)
 }
