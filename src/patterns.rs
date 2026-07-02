@@ -1,38 +1,26 @@
 use regex::Regex;
 use std::sync::LazyLock;
 
-#[allow(dead_code)]
 pub const JIRA: &str = r"[A-Z]{2,7}[0-9]{0,6}-[0-9]{1,6}";
 
-#[allow(dead_code)]
 pub static HEADER: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"^([^(]+)\(([^)]+)\): (.+)$").unwrap());
-#[allow(dead_code)]
 pub static TYPE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"^(feat|fix|docs|gen|lint|refactor|test|chore)$").unwrap());
-#[allow(dead_code)]
 pub static SCOPE: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"^([a-z][a-z0-9]*)(-[a-z0-9]+)*$").unwrap());
-#[allow(dead_code)]
 pub static SUBJECT: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"^[A-Za-z0-9].*[^ ^.]$").unwrap());
-#[allow(dead_code)]
 pub static JIRA_FOOTER: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(&format!(r"^({JIRA} ?)+$")).unwrap());
-#[allow(dead_code)]
 pub static JIRA_HEADER: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(&format!(r"^.*[^A-Z]({JIRA}).*$")).unwrap());
-#[allow(dead_code)]
 pub static BROKE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r"^BROKEN:$").unwrap());
-#[allow(dead_code)]
 pub static TRAILING_SPACE: LazyLock<Regex> = LazyLock::new(|| Regex::new(r" +$").unwrap());
-#[allow(dead_code)]
 pub static REVERT_HEADER: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"^[Rr](evert|eapply)[: ].*$").unwrap());
-#[allow(dead_code)]
 pub static REVERT_COMMIT: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"^This reverts commit ([a-f0-9]+)").unwrap());
-#[allow(dead_code)]
 pub static TEMP_HEADER: LazyLock<Regex> =
     LazyLock::new(|| Regex::new(r"^(fixup!|squash!).*$").unwrap());
 
