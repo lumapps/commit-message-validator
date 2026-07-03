@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+VERSION="${COMMIT_VALIDATOR_VERSION:-}"
+case "$(uname -s)-$(uname -m)" in
+  Linux-x86_64)   target=x86_64-unknown-linux-musl ;;
+  Linux-aarch64)  target=aarch64-unknown-linux-musl ;;
+  Darwin-x86_64)  target=x86_64-apple-darwin ;;
+  Darwin-arm64)   target=aarch64-apple-darwin ;;
+  *) echo "unsupported platform: $(uname -s)-$(uname -m)" >&2; exit 1 ;;
+esac
+
+if [ -n "$VERSION" ]; then
+  cache_key="$VERSION"
+  url="https://github.com/lumapps/commit-message-validator/releases/download/${VERSION}/commit-message-validator-${target}"
+else
+  cache_key="latest"
+  url="https://github.com/lumapps/commit-message-validator/releases/latest/download/commit-message-validator-${target}"
+fi
+
+cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/commit-message-validator/${cache_key}"
+bin="${cache_dir}/commit-message-validator"
+if [ ! -x "$bin" ]; then
+  mkdir -p "$cache_dir"
+  curl -sSfL "$url" -o "$bin"
+  chmod +x "$bin"
+fi
+
+exec "$bin" "$@"

@@ -5,23 +5,19 @@ url="$2"
 
 z40=0000000000000000000000000000000000000000
 
-while read local_ref local_sha remote_ref remote_sha
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
+while read -r local_ref local_sha remote_ref remote_sha
 do
-	if [ "$local_sha" = $z40 ]
-	then
-		# Handle delete
+	if [ "$local_sha" = $z40 ]; then
 		:
 	else
-		if [ "$remote_sha" = $z40 ]
-		then
-			# New branch, examine all commits
+		if [ "$remote_sha" = $z40 ]; then
 			range="$local_sha"
 		else
-			# Update to existing branch, examine new commits
 			range="$remote_sha..$local_sha"
 		fi
-
-		bash ./check.sh "$range"
+		"$DIR/hooks/commit-message-validator" range "$range" || exit $?
 	fi
 done
 
