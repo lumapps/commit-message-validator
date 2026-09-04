@@ -121,6 +121,50 @@ ABC-1234 DE-1234"
   [[ $GLOBAL_FOOTER == "" ]]
 }
 
+@test "structure: valid commit message with header and JIRA key holding digits" {
+  COMMIT="plop plop
+
+A11Y-160"
+
+  validate_overall_structure "$COMMIT"
+  [[ $GLOBAL_HEADER == "plop plop" ]]
+  [[ $GLOBAL_BODY == "" ]]
+  [[ $GLOBAL_JIRA == "A11Y-160" ]]
+  [[ $GLOBAL_FOOTER == "" ]]
+}
+
+@test "structure: valid commit message with JIRA key holding digits in header" {
+  COMMIT="feat(abc): A11Y-160
+
+plop"
+
+  GLOBAL_JIRA_IN_HEADER="allow" validate_overall_structure "$COMMIT"
+  [[ $GLOBAL_HEADER == "feat(abc): A11Y-160" ]]
+  [[ $GLOBAL_JIRA == "A11Y-160" ]]
+  [[ $GLOBAL_BODY == "plop"$'\n' ]]
+  [[ $GLOBAL_FOOTER == "" ]]
+}
+
+@test "structure: lowercase JIRA key is not a JIRA reference" {
+  COMMIT="plop plop
+
+a11y-160"
+
+  validate_overall_structure "$COMMIT"
+  [[ $GLOBAL_JIRA == "" ]]
+  [[ $GLOBAL_BODY == "a11y-160"$'\n' ]]
+}
+
+@test "structure: JIRA key must start with a letter" {
+  COMMIT="plop plop
+
+11Y-160"
+
+  validate_overall_structure "$COMMIT"
+  [[ $GLOBAL_JIRA == "" ]]
+  [[ $GLOBAL_BODY == "11Y-160"$'\n' ]]
+}
+
 @test "structure: valid commit message with header and broken" {
   COMMIT="plop plop
 
@@ -742,4 +786,35 @@ BROKEN:
 
   run validate "$MESSAGE"
   [[ "$status" -eq $ERROR_HEADER ]]
+}
+
+@test "overall validation with JIRA key holding digits" {
+  MESSAGE='feat(scope1): subject
+
+Commit about stuff
+
+A11Y-160'
+
+  run validate "$MESSAGE"
+  [[ "$status" -eq 0 ]]
+}
+
+@test "overall validation with long JIRA key holding digits" {
+  MESSAGE='fix(scope1): subject
+
+Commit about stuff
+
+LUM12-345'
+
+  run validate "$MESSAGE"
+  [[ "$status" -eq 0 ]]
+}
+
+@test "overall validation rejects lowercase JIRA key" {
+  MESSAGE='feat(scope1): subject
+
+a11y-160'
+
+  run validate "$MESSAGE"
+  [[ "$status" -eq $ERROR_JIRA ]]
 }
