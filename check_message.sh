@@ -32,8 +32,9 @@ then
   exit
 fi
 
-# removing comment lines from message
-MESSAGE=$(sed '/^#/d' "$1")
+# removing the commit.verbose diff (everything from the scissors line down),
+# then removing comment lines from what's left
+MESSAGE=$(sed -e '/^#[[:space:]]*-\{1,\}[[:space:]]*>8[[:space:]]*-\{1,\}[[:space:]]*$/,$d' -e '/^#/d' "$1")
 
 FIRST_WORD=$(echo "${MESSAGE%% *}" | tr '[:upper:]' '[:lower:]')
 if [[ "${FIRST_WORD}" == merge ]]

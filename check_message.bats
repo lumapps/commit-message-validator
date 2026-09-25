@@ -45,6 +45,66 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
+@test "check_message: strips the commit.verbose diff below the scissors line" {
+  # With `commit.verbose = true`, git appends the staged diff below a scissors
+  # line. The diff isn't comment-prefixed, so a naive `sed '/^#/d'` leaves it
+  # in the message, right after the header with no blank line in between.
+  cat > "$TMPFILE" << 'EOF'
+feat(scope): valid subject
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# ------------------------ >8 ------------------------
+# Do not modify or remove the line above.
+# Everything below it will be ignored.
+diff --git c/foo.tf i/foo.tf
+index 0000000..1111111 100644
+--- c/foo.tf
++++ i/foo.tf
+@@ -1 +1 @@
+-old
++new
+EOF
+  run bash "$SCRIPT" --no-jira "$TMPFILE"
+  [ "$status" -eq 0 ]
+}
+
+@test "check_message: preserves the body when stripping the commit.verbose diff" {
+  cat > "$TMPFILE" << 'EOF'
+feat(scope): valid subject
+
+this body line must survive
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# ------------------------ >8 ------------------------
+# Do not modify or remove the line above.
+# Everything below it will be ignored.
+diff --git c/foo.tf i/foo.tf
+index 0000000..1111111 100644
+--- c/foo.tf
++++ i/foo.tf
+@@ -1 +1 @@
+-old
++new
+EOF
+  run bash "$SCRIPT" --no-jira "$TMPFILE"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"this body line must survive"* ]]
+}
+
+@test "check_message: does not truncate a body line that merely contains '>8'" {
+  cat > "$TMPFILE" << 'EOF'
+feat(scope): valid subject
+
+# not a scissors line, just a comment mentioning >8 characters
+this body line must survive too
+EOF
+  run bash "$SCRIPT" --no-jira "$TMPFILE"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"this body line must survive too"* ]]
+}
+
 @test "check_message: accepts valid commit message" {
   echo "feat(widget): add a wonderful widget" > "$TMPFILE"
   run bash "$SCRIPT" --no-jira "$TMPFILE"
