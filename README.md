@@ -132,6 +132,10 @@ is mandatory.
 The breaking changes must be at the end of the commit with only "BROKEN:"
 before the list of breaking changes. They must be each on a new line.
 
+`Co-authored-by:` trailers can follow the footer, after an empty line, as the
+last paragraph of the message. GitHub reads the co-authors only from the last
+paragraph.
+
 ### Commit Example
 
 ```Markdown
@@ -144,6 +148,8 @@ LUM-3462
 BROKEN:
 first thing broken
 second thing broken
+
+Co-authored-by: Jane Doe <jane.doe@example.com>
 ```
 
 ### Revert

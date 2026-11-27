@@ -6,6 +6,8 @@ readonly JIRA_PATTERN="[A-Z][A-Z0-9]{1,12}-[0-9]{1,6}"
 readonly JIRA_FOOTER_PATTERN="^(${JIRA_PATTERN} ?)+$"
 readonly JIRA_HEADER_PATTERN="^.*[^A-Z](${JIRA_PATTERN}).*$"
 readonly BROKE_PATTERN="^BROKEN:$"
+# A git trailer: GitHub reads co-authors only from the last paragraph of the message.
+readonly CO_AUTHOR_PATTERN="^[Cc]o-[Aa]uthored-[Bb]y: [^<>]+ <[^<>]+>$"
 readonly TRAILING_SPACE_PATTERN=" +$"
 readonly REVERT_HEADER_PATTERN="^[Rr](evert|eapply)[: ].*$"
 readonly REVERT_COMMIT_PATTERN="^This reverts commit ([a-f0-9]+)"
@@ -46,6 +48,8 @@ validate_overall_structure() {
   local READING_BODY=3
   local READING_BROKEN=4
   local READING_FOOTER=5
+  local START_TRAILERS=6
+  local READING_TRAILERS=7
 
   local STATE="$WAITING_HEADER"
 
@@ -101,6 +105,8 @@ validate_overall_structure() {
     elif [[ $STATE -eq $READING_BROKEN ]]; then
       if [[ $LINE =~ $BROKE_PATTERN ]]; then
         STATE="$READING_FOOTER"
+      elif [[ $LINE = "" ]]; then
+        STATE="$START_TRAILERS"
       else
         echo -e "only broken part could be after the JIRA reference"
         exit $ERROR_STRUCTURE
@@ -108,11 +114,17 @@ validate_overall_structure() {
 
     elif [[ $STATE -eq $READING_FOOTER ]]; then
       if [[ $LINE = "" ]]; then
-        echo -e "no empty line allowed in broken part"
-        exit $ERROR_STRUCTURE
+        STATE="$START_TRAILERS"
+      else
+        GLOBAL_FOOTER=$GLOBAL_FOOTER$LINE$'\n'
       fi
 
-      GLOBAL_FOOTER=$GLOBAL_FOOTER$LINE$'\n'
+    elif [[ $STATE -eq $START_TRAILERS ]] || [[ $STATE -eq $READING_TRAILERS ]]; then
+      if [[ ! $LINE =~ $CO_AUTHOR_PATTERN ]]; then
+        echo -e "only Co-authored-by trailers could be in the paragraph after the JIRA reference or the broken part"
+        exit $ERROR_STRUCTURE
+      fi
+      STATE="$READING_TRAILERS"
 
     else
       echo -e "unknown state in parsing machine"
@@ -121,7 +133,7 @@ validate_overall_structure() {
 
   done <<< "$MESSAGE"
 
-  if [[ $STATE -eq $START_TEXT ]]; then
+  if [[ $STATE -eq $START_TEXT ]] || [[ $STATE -eq $START_TRAILERS ]]; then
     echo -e "new line at the end of the commit is not allowed"
     exit $ERROR_STRUCTURE
   fi

@@ -818,3 +818,80 @@ a11y-160'
   run validate "$MESSAGE"
   [[ "$status" -eq $ERROR_JIRA ]]
 }
+
+@test "structure: valid commit message with jira and co-author trailers" {
+  COMMIT="plop plop
+
+hello
+
+ABC-1234
+
+Co-authored-by: Ada <ada@example.com>
+Co-Authored-By: Bob <bob@example.com>"
+
+  validate_overall_structure "$COMMIT"
+  [[ $GLOBAL_HEADER == "plop plop" ]]
+  [[ $GLOBAL_BODY == "hello"$'\n' ]]
+  [[ $GLOBAL_JIRA == "ABC-1234" ]]
+  [[ $GLOBAL_FOOTER == "" ]]
+}
+
+@test "structure: valid commit message with jira, broken and co-author trailers" {
+  COMMIT="plop plop
+
+ABC-1234
+BROKEN:
+- plop
+
+Co-authored-by: Ada <ada@example.com>"
+
+  validate_overall_structure "$COMMIT"
+  [[ $GLOBAL_JIRA == "ABC-1234" ]]
+  [[ $GLOBAL_FOOTER == "- plop"$'\n' ]]
+}
+
+@test "structure: text after the jira reference that is not a co-author trailer" {
+  COMMIT="plop plop
+
+ABC-1234
+
+hello"
+
+  run validate_overall_structure "$COMMIT"
+  [ "$status" -eq $ERROR_STRUCTURE ]
+}
+
+@test "structure: text after the co-author trailers" {
+  COMMIT="plop plop
+
+ABC-1234
+
+Co-authored-by: Ada <ada@example.com>
+hello"
+
+  run validate_overall_structure "$COMMIT"
+  [ "$status" -eq $ERROR_STRUCTURE ]
+}
+
+@test "structure: empty line in the co-author trailers" {
+  COMMIT="plop plop
+
+ABC-1234
+
+Co-authored-by: Ada <ada@example.com>
+
+Co-authored-by: Bob <bob@example.com>"
+
+  run validate_overall_structure "$COMMIT"
+  [ "$status" -eq $ERROR_STRUCTURE ]
+}
+
+@test "structure: empty line after the jira reference with no trailer" {
+  COMMIT="plop plop
+
+ABC-1234
+"
+
+  run validate_overall_structure "$COMMIT"
+  [ "$status" -eq $ERROR_STRUCTURE ]
+}
